@@ -1,0 +1,111 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Liviel Tours | Dubai Visa & Travel Experts</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="{% static 'app/css/style.css' %}" rel="stylesheet">
+</head>
+<body>
+
+<!-- SVG sprite (inline) -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+    <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></symbol>
+</svg>
+
+<a href="https://wa.me/971528892781?text=Hello%20Liviel%20Tours%2C%20I%20need%20assistance%20with%20visa%2Ftours" class="sticky-whatsapp" target="_blank" rel="noopener noreferrer">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    <span class="d-none d-sm-inline">WhatsApp</span>
+    <span class="d-inline d-sm-none">Chat</span>
+</a>
+
+<nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+            <span class="brand-mark" aria-hidden="true"><svg><use href="#i-globe"/></svg></span>
+            <span><span class="brand-title d-block">Liviel</span><span class="brand-tag">TOURS &amp; TRAVELS</span></span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-label="Open menu">
+            <svg class="icon-svg-lg text-dark" aria-hidden="true"><use href="#i-menu"/></svg>
+        </button>
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+                <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside">UAE Visas</a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#" onclick="showVisaDetail('14 Days Visa', '299 AED'); return false;">14 Days Visa · 299 AED</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="showVisaDetail('30 Days Visa', '499 AED'); return false;">30 Days Visa · 499 AED</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="showVisaDetail('60 Days Visa', '1250 AED'); return false;">60 Days Visa · 1,250 AED</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#" onclick="showResidenceInquiry(); return false;">Residence Visa</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Tours</a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#" onclick="showTour('Desert Safari', 'AED 150'); return false;">Desert Safari · AED 150</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="showTour('City Tour Dubai', 'AED 120'); return false;">City Tour Dubai · AED 120</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="showTour('Abu Dhabi Tour', 'AED 180'); return false;">Abu Dhabi Tour · AED 180</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item"><a class="nav-link" href="#why-us">Why Us</a></li>
+                <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<section class="hero-wrap" id="home">
+    <div class="hero-bg" aria-hidden="true">
+        <img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&amp;fit=crop&amp;w=1920&amp;q=80" alt="" width="1920" height="1280" loading="eager" fetchpriority="high" decoding="async">
+    </div>
+    <div class="hero-overlay" aria-hidden="true"></div>
+    <div class="container position-relative">
+        <div class="hero-inner">
+            <div class="hero-badge"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>UAE tours &amp; visas since 2015</div>
+            <h1 class="hero-title text-white"><span class="text-gold">UAE visas</span> &amp; Dubai tours — fast &amp; fairly priced</h1>
+            <p class="hero-lead mb-0">Visas or tours in a few taps. WhatsApp support and clear pricing.</p>
+            <div class="d-flex flex-column flex-sm-row gap-2 gap-sm-3 mt-4">
+                <button type="button" class="btn btn-primary-custom px-4" onclick="scrollToSection('services')">Apply for a visa</button>
+                <button type="button" class="btn btn-outline-light-custom px-4" onclick="showTourPackage()">Book a tour</button>
+            </div>
+            <div class="hero-meta"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span>24h visa updates · high approval rate</span></div>
+        </div>
+    </div>
+</section>
+
+<div class="pay-strip"><div class="container"><div class="pay-strip-inner"><span class="pay-strip-kicker">Accepted payments</span><ul class="pay-methods"><li><div class="pay-method-chip" title="BOTIM"><img src="{% static 'app/media/assets-botim.svg' %}" alt="botim" class="pay-logo-img pay-logo-img--botim" width="30" height="30" loading="lazy"><span>BOTIM</span></div></li><li><div class="pay-method-chip" title="M-Pesa"><img src="{% static 'app/media/assets-mpesa.svg' %}" alt="" class="pay-logo-img pay-logo-img--mpesa" height="26" loading="lazy"></div></li><li><div class="pay-method-chip" title="Card"><svg class="pay-logo-svg" viewBox="0 0 40 40"><rect width="40" height="40" rx="9" fill="#142688"/><rect x="6" y="13" width="28" height="19" rx="3" fill="#fff"/><rect x="6" y="13" width="28" height="7" rx="2" fill="#1e3a5f"/><rect x="9" y="23" width="10" height="6" rx="1" fill="#c45c26"/><rect x="22" y="25" width="9" height="2" rx="0.5" fill="#d4d4d4"/><rect x="22" y="28" width="6" height="1.5" rx="0.5" fill="#d4d4d4"/></svg><span>Card</span></div></li><li><div class="pay-method-chip" title="Cash"><svg class="pay-logo-svg" viewBox="0 0 40 40"><rect width="40" height="40" rx="9" fill="#1b4332"/><rect x="7" y="14" width="26" height="15" rx="2" fill="#95d5b2" stroke="#2d6a4f" stroke-width="1"/><rect x="9" y="16" width="22" height="11" rx="1" fill="#74c69d" opacity="0.5"/><circle cx="20" cy="21.5" r="3.5" fill="none" stroke="#1b4332" stroke-width="1.2"/><path stroke="#1b4332" stroke-width="1" d="M20 19v5"/></svg><span>Cash</span></div></li></ul><span class="pay-strip-note text-muted small">BOTIM, M-Pesa, card, or cash — confirm details on WhatsApp.</span></div></div></div>
+
+{% include 'app/why.html' %}
+
+<div class="container section-pad pt-0"><div class="steps-panel" data-aos="fade-up"><div class="text-center mb-4"><p class="section-kicker mb-1">How it works</p><h2 class="section-title mb-0">Four simple steps</h2></div><div class="steps-svg-container"><svg viewBox="0 0 900 180" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto;"><defs><linearGradient id="stepGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#c45c26"/><stop offset="100%" stop-color="#e8b86a"/></linearGradient><filter id="glow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur in="SourceAlpha" stdDeviation="2"/><feMerge><feMergeNode in="offsetblur" /><feMergeNode in="SourceGraphic" /></feMerge></filter></defs><g transform="translate(30, 20)"><circle cx="60" cy="60" r="48" fill="white" stroke="url(#stepGrad)" stroke-width="2.5" filter="url(#glow)"/><text x="60" y="52" text-anchor="middle" fill="#c45c26" font-size="28" font-weight="bold" font-family="Fraunces, Georgia, serif">1</text><text x="60" y="98" text-anchor="middle" fill="#c45c26" font-size="32">📋</text><text x="60" y="140" text-anchor="middle" fill="var(--ink)" font-size="13" font-weight="600" font-family="DM Sans, sans-serif">Choose Service</text></g><path d="M130 80 L170 80" stroke="#c45c26" stroke-width="2.5" stroke-dasharray="6 4"/><polygon points="170,80 162,75 162,85" fill="#c45c26"/><g transform="translate(200, 20)"><circle cx="60" cy="60" r="48" fill="white" stroke="url(#stepGrad)" stroke-width="2.5" filter="url(#glow)"/><text x="60" y="52" text-anchor="middle" fill="#c45c26" font-size="28" font-weight="bold">2</text><text x="60" y="98" text-anchor="middle" fill="#c45c26" font-size="32">📄</text><text x="60" y="140" text-anchor="middle" fill="var(--ink)" font-size="13" font-weight="600">Share Details</text></g><path d="M300 80 L340 80" stroke="#c45c26" stroke-width="2.5" stroke-dasharray="6 4"/><polygon points="340,80 332,75 332,85" fill="#c45c26"/><g transform="translate(370, 20)"><circle cx="60" cy="60" r="48" fill="white" stroke="url(#stepGrad)" stroke-width="2.5" filter="url(#glow)"/><text x="60" y="52" text-anchor="middle" fill="#c45c26" font-size="28" font-weight="bold">3</text><text x="60" y="98" text-anchor="middle" fill="#c45c26" font-size="32">💳</text><text x="60" y="140" text-anchor="middle" fill="var(--ink)" font-size="13" font-weight="600">Pay Securely</text></g><path d="M470 80 L510 80" stroke="#c45c26" stroke-width="2.5" stroke-dasharray="6 4"/><polygon points="510,80 502,75 502,85" fill="#c45c26"/><g transform="translate(540, 20)"><circle cx="60" cy="60" r="48" fill="white" stroke="url(#stepGrad)" stroke-width="2.5" filter="url(#glow)"/><text x="60" y="52" text-anchor="middle" fill="#c45c26" font-size="28" font-weight="bold">4</text><text x="60" y="98" text-anchor="middle" fill="#c45c26" font-size="32">✅</text><text x="60" y="140" text-anchor="middle" fill="var(--ink)" font-size="13" font-weight="600">Get Confirmation</text></g></svg></div><div class="text-center mt-3"><p class="text-muted small">Visa updates often within 24 hours • WhatsApp support at every step</p></div></div></div>
+
+<div class="container section-pad pt-0"><div class="text-center mb-4" data-aos="fade-up"><p class="section-kicker">Testimonials</p><h2 class="section-title">What travelers say</h2></div><div class="row g-4"><div class="col-md-4" data-aos="fade-up"><blockquote class="testimonial-pro"><div class="top"><img class="avatar-img" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&amp;fit=crop&amp;w=128&amp;h=128&amp;q=80" alt="" width="128" height="128" loading="lazy"><div><div class="stars-inline justify-content-start mb-1"><svg width="14" height="14"><use href="#i-star"/></svg><svg width="14" height="14"><use href="#i-star"/></svg><svg width="14" height="14"><use href="#i-star"/></svg><svg width="14" height="14"><use href="#i-star"/></svg><svg width="14" height="14"><use href="#i-star"/></svg></div><div class="name">Ahmed K.</div><div class="loc">Kenya</div></div></div><p class="quote">“Got my 30-day visa in about a day. Clear instructions and quick replies on WhatsApp.”</p></blockquote></div><div class="col-md-4" data-aos="fade-up" data-aos-delay="80"><blockquote class="testimonial-pro"><div class="top"><img class="avatar-img" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&amp;fit=crop&amp;w=128&amp;h=128&amp;q=80" alt="" width="128" height="128" loading="lazy"><div><div class="stars-inline justify-content-start mb-1"><svg width="14" height="14"><use href="#i-star"/></svg><svg width="14" height="14"><use href="#i-star"/></svg><svg width="14" height="14"><use href="#i-star"/></svg><svg width="14" height="14"><use href="#i-star"/></svg><svg width="14" height="14"><use href="#i-star"/></svg></div><div class="name">Sarah M.</div><div class="loc">United Kingdom</div></div></div><p class="quote">“Desert safari was seamless from pickup to dinner. Great value and friendly team.”</p></blockquote></div><div class="col-md-4" data-aos="fade-up" data-aos-delay="160"><blockquote class="testimonial-pro"><div class="top"><img class="avatar-img" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&amp;fit=crop&amp;w=128&amp;h=128&amp;q=80" alt="" width="128" height="128" loading="lazy"><div><div class="stars-inline justify-content-start mb-1"><svg width="14" height="14"><use href="#i-star"/></svg><svg width="14" height="14"><use href="#i-star"/></svg><svg width="14" height="14"><use href="#i-star"/></svg><svg width="14" height="14"><use href="#i-star"/></svg><svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" opacity="0.45"/></svg></div><div class="name">James O.</div><div class="loc">Nairobi</div></div></div><p class="quote">“Helpful with M-Pesa and rates near Union Metro. Saved me a lot of time.”</p></blockquote></div></div></div>
+
+{% include 'app/contact.html' %}
+
+<footer><div class="container text-center text-md-start"><div class="row align-items-center gy-2"><div class="col-md-6"><p class="mb-0">&copy; 2026 Liviel Tours &amp; Travels. UAE visa &amp; tour services.</p></div><div class="col-md-6 text-md-end"><p class="mb-0">Baniyas Metro · <a href="tel:+971528892781">+971 52 889 2781</a></p></div></div></div></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init({ duration: 650, once: true, offset: 60 });
+    function scrollToSection(id) { const el = document.getElementById(id); if(!el) return; const offset = 72; const pos = el.getBoundingClientRect().top + window.pageYOffset - offset; window.scrollTo({ top: pos, behavior: 'smooth' }); }
+    function showVisaDetail(type, price) { Swal.fire({ title: type, html: 'Price: <strong>' + price + '</strong><br>Typical processing: 24 hours<br>Requirements: passport copy &amp; photo', icon: 'info', confirmButtonColor: '#c45c26' }).then(() => { window.open('https://wa.me/971528892781?text=' + encodeURIComponent('I need ' + type), '_blank'); }); }
+    function showTour(tour, price) { Swal.fire({ title: tour, html: 'From <strong>' + price + '</strong><br>Includes transfers and activities as per package.', icon: 'info', confirmButtonColor: '#c45c26' }).then(() => { window.open('https://wa.me/971528892781?text=' + encodeURIComponent('I want to book ' + tour), '_blank'); }); }
+    function showTourPackage() { Swal.fire({ title: 'Book a Dubai tour', text: 'Desert safari, city tour, or Abu Dhabi — we will confirm availability on WhatsApp.', icon: 'info', confirmButtonText: 'Open WhatsApp', confirmButtonColor: '#c45c26' }).then(() => { window.open('https://wa.me/971528892781?text=' + encodeURIComponent('I want to book a tour'), '_blank'); }); }
+    function showResidenceInquiry() { Swal.fire({ title: 'UAE residence visa', text: 'Labor, medical, biometrics, Emirates ID — our team will walk you through the full package.', icon: 'info', confirmButtonText: 'Request callback', confirmButtonColor: '#c45c26' }).then(() => { window.open('https://wa.me/971528892781?text=' + encodeURIComponent('Residence visa inquiry'), '_blank'); }); }
+    document.getElementById('leadFormModern').addEventListener('submit', function(e) { e.preventDefault(); var name = document.getElementById('fullNameModern').value.trim(); if(!name) { Swal.fire({ title: 'Name required', text: 'Please enter your name so we can reply.', icon: 'warning' }); return; } Swal.fire({ title: 'Request sent', text: 'Thank you, ' + name + '. We will contact you shortly.', icon: 'success' }); this.reset(); });
+    document.querySelectorAll('.nav-link').forEach(function(link) { link.addEventListener('click', function(e) { if(this.classList.contains('dropdown-toggle')) return; var href = this.getAttribute('href'); if(href && href.startsWith('#')) { e.preventDefault(); scrollToSection(href.substring(1)); var nav = document.getElementById('mainNavbar'); if(nav && window.bootstrap) { var bsCollapse = bootstrap.Collapse.getInstance(nav); if(bsCollapse) bsCollapse.hide(); } } }); });
+    (function setupMobileNavCollapseOutside() { document.addEventListener('click', function(e) { if(!window.matchMedia('(max-width: 991.98px)').matches || !window.bootstrap) return; var navbar = document.querySelector('.navbar'); var collapseEl = document.getElementById('mainNavbar'); if(!navbar || !collapseEl || !collapseEl.classList.contains('show')) return; if(navbar.contains(e.target)) return; var inst = bootstrap.Collapse.getInstance(collapseEl); if(inst) inst.hide(); }); })();
+</script>
+</body>
+</html>
