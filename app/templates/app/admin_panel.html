@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Liviel Tours | Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', system-ui, sans-serif;
+            background: #f4f6fa;
+            color: #0f172a;
+            overflow-x: hidden;
+        }
+
+        /* Loading overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.3s;
+        }
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #c45c26;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ========== DESKTOP FIRST LAYOUT ========== */
+        .admin-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR - DESKTOP */
+        .admin-sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #0f172b 0%, #0a0f1f 100%);
+            color: #e2e8f0;
+            position: fixed;
+            inset: 0;
+            height: 100vh;
+            overflow-y: auto;
+            transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            z-index: 1040;
+            box-shadow: 2px 0 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .sidebar-brand {
+            padding: 1.75rem 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            margin-bottom: 1.5rem;
+        }
+        .sidebar-brand h2 {
+            font-family: 'Fraunces', serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin: 0;
+            background: linear-gradient(135deg, #fff, #e8b86a);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .sidebar-brand p {
+            font-size: 0.7rem;
+            opacity: 0.65;
+            margin: 0;
+            letter-spacing: 0.5px;
+        }
+        .nav-admin {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .nav-admin li a {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            padding: 0.85rem 1.5rem;
+            color: #cbd5e6;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+            margin: 0.2rem 0;
+            cursor: pointer;
+        }
+        .nav-admin li a:hover {
+            background: rgba(255,255,255,0.05);
+            color: white;
+            border-left-color: #c45c26;
+        }
+        .nav-admin li.active a {
+            background: rgba(196, 92, 38, 0.12);
+            color: white;
+            border-left-color: #c45c26;
+            font-weight: 600;
+        }
+
+        /* MAIN CONTENT */
+        .admin-main {
+            flex: 1;
+            margin-left: 280px;
+            padding: 1.5rem 2rem;
+            transition: margin-left 0.3s ease;
+        }
+
+        /* Header Card */
+        .admin-header-card {
+            background: white;
+            border-radius: 28px;
+            padding: 1.5rem 1.8rem;
+            margin-bottom: 1.8rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0,0,0,0.03);
+            border: 1px solid rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        /* Stat Cards Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card-modern {
+            background: white;
+            border-radius: 24px;
+            padding: 1.25rem;
+            border: 1px solid #eef2f8;
+            transition: all 0.25s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+        .stat-card-modern:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px -12px rgba(0,0,0,0.1);
+        }
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            background: #fef5e8;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        .stat-icon i {
+            font-size: 1.6rem;
+            color: #c45c26;
+        }
+        .stat-number {
+            font-family: 'Fraunces', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        /* Content Cards */
+        .data-card {
+            background: white;
+            border-radius: 28px;
+            border: 1px solid #eef2f8;
+            padding: 1.5rem;
+            margin-bottom: 1.8rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        }
+        .card-header-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 1.25rem;
+            gap: 0.75rem;
+        }
+        .card-header-flex h3 {
+            font-family: 'Fraunces', serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        /* Responsive Item Grid */
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .item-card-horizontal {
+            background: #fefefe;
+            border-radius: 20px;
+            border: 1px solid #edf2f7;
+            padding: 1rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            transition: all 0.2s;
+        }
+        .item-card-horizontal:hover {
+            border-color: #c45c2620;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.03);
+        }
+        .item-img {
+            width: 70px;
+            height: 70px;
+            border-radius: 18px;
+            object-fit: cover;
+            background: #f1f5f9;
+            flex-shrink: 0;
+        }
+        .item-info {
+            flex: 1;
+        }
+        .item-info h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+        }
+        .item-price {
+            color: #c45c26;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+        .item-desc {
+            font-size: 0.75rem;
+            color: #5b6e8c;
+        }
+        .item-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .btn-icon-circle {
+            width: 34px;
+            height: 34px;
+            border-radius: 40px;
+            background: #f1f5f9;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            color: #334155;
+            cursor: pointer;
+        }
+        .btn-icon-circle:hover {
+            background: #e2e8f0;
+        }
+        .btn-icon-circle.danger:hover {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        /* Testimonials Grid */
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.25rem;
+        }
+        .testimonial-card {
+            background: #fafcff;
+            border-radius: 24px;
+            padding: 1.2rem;
+            border: 1px solid #eef2f8;
+        }
+
+        /* Enquiries List */
+        .enquiry-item {
+            background: #fafcff;
+            border-radius: 20px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border: 1px solid #eef2f8;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        /* FAB (mobile only) */
+        .fab-add {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            background: #c45c26;
+            color: white;
+            width: 56px;
+            height: 56px;
+            border-radius: 28px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 18px rgba(196, 92, 38, 0.4);
+            border: none;
+            z-index: 1050;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .mobile-menu-toggle {
+            display: none;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 40px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+        }
+
+        /* ========== MOBILE RESPONSIVE ========== */
+        @media (max-width: 992px) {
+            .admin-sidebar {
+                transform: translateX(-100%);
+                width: 280px;
+            }
+            .admin-sidebar.open {
+                transform: translateX(0);
+            }
+            .admin-main {
+                margin-left: 0;
+                padding: 1rem;
+            }
+            .mobile-menu-toggle {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            .fab-add {
+                display: flex;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.75rem;
+            }
+            .items-grid {
+                grid-template-columns: 1fr;
+            }
+            .admin-header-card {
+                padding: 1rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+        }
+
+        @media (min-width: 993px) and (max-width: 1300px) {
+            .items-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* utilities */
+        .btn-accent {
+            background: #c45c26;
+            border: none;
+            color: white;
+            border-radius: 40px;
+            padding: 0.5rem 1.2rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .btn-accent:hover {
+            background: #9a451c;
+            color: white;
+        }
+        .btn-outline-accent {
+            border: 1px solid #c45c26;
+            background: transparent;
+            color: #c45c26;
+            border-radius: 40px;
+            padding: 0.4rem 1rem;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+        .rating-stars {
+            color: #f59e0b;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+        }
+        .badge-date {
+            font-size: 0.7rem;
+            background: #f1f5f9;
+            padding: 0.2rem 0.6rem;
+            border-radius: 40px;
+        }
+    </style>
+</head>
+<body>
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+</div>
+
+<div class="admin-wrapper">
+    <!-- Sidebar Desktop / Mobile Drawer -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-brand">
+            <h2>📋 Liviel</h2>
+            <p>CONTROL PANEL · v2.0</p>
+        </div>
+        <ul class="nav-admin">
+            <li data-tab="dashboard" class="active"><a><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+            <li data-tab="visas"><a><i class="bi bi-file-text"></i> Visa Packages</a></li>
+            <li data-tab="tours"><a><i class="bi bi-compass"></i> Tour Packages</a></li>
+            <li data-tab="testimonials"><a><i class="bi bi-chat-dots"></i> Testimonials</a></li>
+            <li data-tab="whyus"><a><i class="bi bi-shield-check"></i> Why Us Section</a></li>
+            <li data-tab="enquiries"><a><i class="bi bi-envelope-paper"></i> Enquiries</a></li>
+            <li data-tab="currency"><a><i class="bi bi-currency-exchange"></i> Exchange Rates</a></li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <div class="admin-header-card">
+            <div>
+                <button class="mobile-menu-toggle" id="mobileMenuToggle"><i class="bi bi-list"></i> Menu</button>
+                <h4 class="mb-0 fw-bold mt-2 mt-md-0">Welcome back, <span class="text-accent" style="color:#c45c26;" id="adminName">Admin</span></h4>
+                <p class="text-muted small mb-0">Manage website content, pricing & customer inquiries</p>
+            </div>
+            <div>
+                <button class="btn btn-sm btn-outline-secondary me-2" id="refreshBtn"><i class="bi bi-arrow-repeat"></i> Refresh</button>
+                <a href="/admin/" class="badge bg-light text-dark border text-decoration-none"><i class="bi bi-shield-lock"></i> Django Admin</a>
+            </div>
+        </div>
+
+        <div id="dynamicPanel"></div>
+    </main>
+</div>
+
+<!-- Floating Action Button (mobile) -->
+<button class="fab-add" id="floatingActionBtn"><i class="bi bi-plus-lg fs-5"></i></button>
+
+<script>
+    // API Base URL
+    const API_BASE = '/api/admin/';
+    
+    // State
+    let currentTab = 'dashboard';
+    let adminData = {
+        visas: [],
+        tours: [],
+        testimonials: [],
+        whyUs: [],
+        enquiries: [],
+        exchangeRate: null
+    };
+    
+    // Helper Functions
+    function showLoading() {
+        document.getElementById('loadingOverlay').style.display = 'flex';
+    }
+    
+    function hideLoading() {
+        document.getElementById('loadingOverlay').style.display = 'none';
+    }
+    
+    function getCSRFToken() {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, 10) === ('csrftoken' + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(10));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    
+    function escapeHtml(str) { 
+        if(!str) return ''; 
+        return str.replace(/[&<>]/g, function(m){
+            if(m==='&') return '&amp;'; 
+            if(m==='<') return '&lt;'; 
+            if(m==='>') return '&gt;'; 
+            return m;
+        }); 
+    }
+    
+    function toast(msg, icon='success') {
+        Swal.fire({ toast: true, position: 'top-end', icon, title: msg, showConfirmButton: false, timer: 2200 });
+    }
+    
+    // API Calls
+    async function fetchAllData() {
+        showLoading();
+        try {
+            const [visas, tours, testimonials, whyUs, enquiries, exchangeRate] = await Promise.all([
+                fetch(`${API_BASE}visas/`).then(r => r.json()),
+                fetch(`${API_BASE}tours/`).then(r => r.json()),
+                fetch(`${API_BASE}testimonials/`).then(r => r.json()),
+                fetch(`${API_BASE}whyus/`).then(r => r.json()),
+                fetch(`${API_BASE}enquiries/`).then(r => r.json()),
+                fetch(`${API_BASE}exchange-rate/`).then(r => r.json())
+            ]);
+            
+            adminData.visas = visas.data || [];
+            adminData.tours = tours.data || [];
+            adminData.testimonials = testimonials.data || [];
+            adminData.whyUs = whyUs.data || [];
+            adminData.enquiries = enquiries.data || [];
+            adminData.exchangeRate = exchangeRate.data;
+            
+            renderCurrentTab();
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            toast('Failed to load data. Please refresh.', 'error');
+        } finally {
+            hideLoading();
+        }
+    }
+    
+    // CRUD Operations
+
+// CRUD Operations - Updated URLs
+async function createItem(type, data) {
+    showLoading();
+    try {
+        let url;
+        if (type === 'testimonials') {
+            url = '/api/admin/testimonials/create/';
+        } else {
+            url = `${API_BASE}${type}/`;
+        }
+        
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken()
+            },
+            body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        if (result.success) {
+            toast(`${type.slice(0,-1)} created successfully`);
+            await fetchAllData();
+            return true;
+        } else {
+            toast(result.error || 'Failed to create', 'error');
+            return false;
+        }
+    } catch (error) {
+        console.error('Create error:', error);
+        toast('Network error: ' + error.message, 'error');
+        return false;
+    } finally {
+        hideLoading();
+    }
+}
+
+async function updateItem(type, id, data) {
+    showLoading();
+    try {
+        const url = `${API_BASE}${type}/${id}/`;
+        const response = await fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken()
+            },
+            body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        if (result.success) {
+            toast(`${type.slice(0,-1)} updated successfully`);
+            await fetchAllData();
+            return true;
+        } else {
+            toast(result.error || 'Failed to update', 'error');
+            return false;
+        }
+    } catch (error) {
+        console.error('Update error:', error);
+        toast('Network error: ' + error.message, 'error');
+        return false;
+    } finally {
+        hideLoading();
+    }
+}
+
+async function deleteItem(type, id) {
+    const confirm = await Swal.fire({
+        title: 'Are you sure?',
+        text: "This action cannot be undone!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc2626',
+        confirmButtonText: 'Yes, delete it!'
+    });
+    
+    if (!confirm.isConfirmed) return false;
+    
+    showLoading();
+    try {
+        const url = `${API_BASE}${type}/${id}/`;
+        const response = await fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRFToken': getCSRFToken()
+            }
+        });
+        const result = await response.json();
+        if (result.success) {
+            toast(`${type.slice(0,-1)} deleted successfully`);
+            await fetchAllData();
+            return true;
+        } else {
+            toast(result.error || 'Failed to delete', 'error');
+            return false;
+        }
+    } catch (error) {
+        console.error('Delete error:', error);
+        toast('Network error: ' + error.message, 'error');
+        return false;
+    } finally {
+        hideLoading();
+    }
+}
+    async function updateExchangeRate(rate) {
+        showLoading();
+        try {
+            const response = await fetch(`${API_BASE}exchange-rate/`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCSRFToken()
+                },
+                body: JSON.stringify({ ksh_to_aed: rate })
+            });
+            const result = await response.json();
+            if (result.success) {
+                toast('Exchange rate updated successfully');
+                await fetchAllData();
+                return true;
+            } else {
+                toast(result.error || 'Failed to update', 'error');
+                return false;
+            }
+        } catch (error) {
+            toast('Network error', 'error');
+            return false;
+        } finally {
+            hideLoading();
+        }
+    }
+    
+    // Modal Dialogs
+    function openVisaModal(existing = null) {
+        Swal.fire({
+            title: existing ? "Edit Visa" : "New Visa",
+            html: `
+                <input id="vName" class="swal2-input" placeholder="Name" value="${existing?.name || ''}">
+                <input id="vPrice" class="swal2-input" placeholder="Price" value="${existing?.price || ''}">
+                <textarea id="vDesc" class="swal2-textarea" placeholder="Description">${existing?.description || ''}</textarea>
+                <input id="vImg" class="swal2-input" placeholder="Image URL" value="${existing?.image_url || ''}">
+                <input id="vOrder" type="number" class="swal2-input" placeholder="Display Order" value="${existing?.order || 0}">
+            `,
+            preConfirm: () => {
+                const name = document.getElementById('vName').value;
+                const price = document.getElementById('vPrice').value;
+                if (!name || !price) {
+                    Swal.showValidationMessage("Name and price are required");
+                    return false;
+                }
+                return {
+                    name: name,
+                    price: price,
+                    description: document.getElementById('vDesc').value,
+                    image_url: document.getElementById('vImg').value || "https://placehold.co/400x300",
+                    order: parseInt(document.getElementById('vOrder').value) || 0,
+                    is_active: true
+                };
+            }
+        }).then(async (res) => {
+            if (res.isConfirmed) {
+                if (existing) {
+                    await updateItem('visas', existing.id, res.value);
+                } else {
+                    await createItem('visas', res.value);
+                }
+            }
+        });
+    }
+    
+    function openTourModal(existing = null) {
+        Swal.fire({
+            title: existing ? "Edit Tour" : "New Tour",
+            html: `
+                <input id="tName" class="swal2-input" placeholder="Name" value="${existing?.name || ''}">
+                <input id="tPrice" class="swal2-input" placeholder="Price" value="${existing?.price || ''}">
+                <textarea id="tDesc" class="swal2-textarea" placeholder="Description">${existing?.description || ''}</textarea>
+                <input id="tImg" class="swal2-input" placeholder="Image URL" value="${existing?.image_url || ''}">
+                <input id="tOrder" type="number" class="swal2-input" placeholder="Display Order" value="${existing?.order || 0}">
+            `,
+            preConfirm: () => {
+                const name = document.getElementById('tName').value;
+                const price = document.getElementById('tPrice').value;
+                if (!name || !price) {
+                    Swal.showValidationMessage("Name and price are required");
+                    return false;
+                }
+                return {
+                    name: name,
+                    price: price,
+                    description: document.getElementById('tDesc').value,
+                    image_url: document.getElementById('tImg').value || "https://placehold.co/400x300",
+                    order: parseInt(document.getElementById('tOrder').value) || 0,
+                    is_active: true
+                };
+            }
+        }).then(async (res) => {
+            if (res.isConfirmed) {
+                if (existing) {
+                    await updateItem('tours', existing.id, res.value);
+                } else {
+                    await createItem('tours', res.value);
+                }
+            }
+        });
+    }
+    
+    function openTestimonialModal(existing = null) {
+        Swal.fire({
+            title: existing ? "Edit Review" : "Add Review",
+            html: `
+                <input id="tmName" class="swal2-input" placeholder="Name" value="${existing?.name || ''}">
+                <input id="tmLoc" class="swal2-input" placeholder="Location" value="${existing?.location || ''}">
+                <textarea id="tmText" class="swal2-textarea" placeholder="Review text">${existing?.text || ''}</textarea>
+                <input id="tmRating" type="number" min="1" max="5" class="swal2-input" placeholder="Rating 1-5" value="${existing?.rating || 5}">
+                <input id="tmAvatar" class="swal2-input" placeholder="Avatar URL" value="${existing?.avatar_url || ''}">
+                <input id="tmOrder" type="number" class="swal2-input" placeholder="Display Order" value="${existing?.order || 0}">
+            `,
+            preConfirm: () => {
+                return {
+                    name: document.getElementById('tmName').value,
+                    location: document.getElementById('tmLoc').value,
+                    text: document.getElementById('tmText').value,
+                    rating: parseInt(document.getElementById('tmRating').value) || 5,
+                    avatar_url: document.getElementById('tmAvatar').value || "https://randomuser.me/api/portraits/men/1.jpg",
+                    order: parseInt(document.getElementById('tmOrder').value) || 0,
+                    is_active: true
+                };
+            }
+        }).then(async (res) => {
+            if (res.isConfirmed) {
+                if (existing) {
+                    await updateItem('testimonials', existing.id, res.value);
+                } else {
+                    await createItem('testimonials', res.value);
+                }
+            }
+        });
+    }
+    
+    function openWhyModal(existing = null) {
+        Swal.fire({
+            title: existing ? "Edit Why Us" : "Add Why Us",
+            html: `
+                <input id="wTitle" class="swal2-input" placeholder="Title" value="${existing?.title || ''}">
+                <textarea id="wDesc" class="swal2-textarea" placeholder="Description">${existing?.description || ''}</textarea>
+                <input id="wImg" class="swal2-input" placeholder="Image URL" value="${existing?.image_url || ''}">
+                <input id="wOrder" type="number" class="swal2-input" placeholder="Display Order" value="${existing?.order || 0}">
+            `,
+            preConfirm: () => {
+                return {
+                    title: document.getElementById('wTitle').value,
+                    description: document.getElementById('wDesc').value,
+                    image_url: document.getElementById('wImg').value || "https://placehold.co/400x300",
+                    order: parseInt(document.getElementById('wOrder').value) || 0,
+                    is_active: true
+                };
+            }
+        }).then(async (res) => {
+            if (res.isConfirmed) {
+                if (existing) {
+                    await updateItem('whyus', existing.id, res.value);
+                } else {
+                    await createItem('whyus', res.value);
+                }
+            }
+        });
+    }
+    
+    // Render Functions
+    function renderDashboard() {
+        const unreadCount = adminData.enquiries.filter(e => !e.is_read).length;
+        return `
+            <div class="stats-grid">
+                <div class="stat-card-modern"><div class="stat-icon"><i class="bi bi-file-text"></i></div><div class="stat-number">${adminData.visas.length}</div><div class="text-muted small">Visa Types</div></div>
+                <div class="stat-card-modern"><div class="stat-icon"><i class="bi bi-compass"></i></div><div class="stat-number">${adminData.tours.length}</div><div class="text-muted small">Tour Packages</div></div>
+                <div class="stat-card-modern"><div class="stat-icon"><i class="bi bi-chat-quote"></i></div><div class="stat-number">${adminData.testimonials.length}</div><div class="text-muted small">Testimonials</div></div>
+                <div class="stat-card-modern"><div class="stat-icon"><i class="bi bi-envelope"></i></div><div class="stat-number">${adminData.enquiries.length}</div><div class="text-muted small">Enquiries ${unreadCount > 0 ? `(${unreadCount} unread)` : ''}</div></div>
+            </div>
+            <div class="data-card"><div class="card-header-flex"><h3><i class="bi bi-currency-exchange"></i> Live Exchange Rate</h3></div><div class="d-flex justify-content-between align-items-center flex-wrap"><div><strong>1 KSH = ${adminData.exchangeRate?.ksh_to_aed || 3.5} AED</strong><br><small>1 AED = ${(1/(adminData.exchangeRate?.ksh_to_aed || 3.5)).toFixed(2)} KSH</small></div><div class="badge-date">Updated: ${adminData.exchangeRate?.last_updated || 'N/A'}</div></div></div>
+            <div class="data-card"><div class="card-header-flex"><h3><i class="bi bi-clock-history"></i> Recent Inquiries</h3><button class="btn-outline-accent btn-sm" onclick="setActiveTab('enquiries')">View all</button></div>${adminData.enquiries.length === 0 ? '<div class="text-muted text-center py-4">No enquiries yet</div>' : adminData.enquiries.slice(0, 3).map(e => `
+                <div class="enquiry-item">
+                    <div>
+                        <strong>${escapeHtml(e.name)}</strong><br>
+                        <small>${e.phone} · ${e.email || 'no email'}</small>
+                        <div class="small text-secondary mt-1">${escapeHtml(e.message?.substring(0, 70))}</div>
+                    </div>
+                    <button class="btn-icon-circle danger" onclick="deleteEnquiry('${e.id}')"><i class="bi bi-trash"></i></button>
+                </div>
+            `).join('')}</div>
+        `;
+    }
+    
+    function renderGenericList(items, type, nameKey = 'name', priceKey = 'price', descKey = 'description') {
+        const titles = {
+            visas: { icon: 'bi-file-text', name: 'Visa Packages', addBtn: 'openVisaModal()', editFn: 'editVisa', deleteFn: 'deleteVisa' },
+            tours: { icon: 'bi-compass', name: 'Tour Packages', addBtn: 'openTourModal()', editFn: 'editTour', deleteFn: 'deleteTour' },
+            whyus: { icon: 'bi-shield-check', name: 'Why Us Section', addBtn: 'openWhyModal()', editFn: 'editWhy', deleteFn: 'deleteWhy' }
+        };
+        const config = titles[type];
+        
+        return `<div class="data-card"><div class="card-header-flex"><h3><i class="bi ${config.icon}"></i> ${config.name}</h3><button class="btn-accent btn-sm" onclick="${config.addBtn}"><i class="bi bi-plus-lg"></i> Add</button></div><div class="items-grid">${items.map(item => `
+            <div class="item-card-horizontal">
+                <img class="item-img" src="${item.image_url || 'https://placehold.co/70x70'}" onerror="this.src='https://placehold.co/70x70'">
+                <div class="item-info">
+                    <h4>${escapeHtml(item[nameKey])}</h4>
+                    ${item[priceKey] ? `<div class="item-price">${escapeHtml(item[priceKey])}</div>` : ''}
+                    <div class="item-desc">${escapeHtml(item[descKey]?.substring(0, 70))}</div>
+                </div>
+                <div class="item-actions">
+                    <button class="btn-icon-circle" onclick="${config.editFn}(${item.id})"><i class="bi bi-pencil"></i></button>
+                    <button class="btn-icon-circle danger" onclick="${config.deleteFn}(${item.id})"><i class="bi bi-trash3"></i></button>
+                </div>
+            </div>
+        `).join('')}</div>${items.length === 0 ? '<div class="text-center py-4 text-muted">No items. Click Add to create.</div>' : ''}</div>`;
+    }
+    
+    function renderTestimonialsPanel() {
+        return `<div class="data-card"><div class="card-header-flex"><h3><i class="bi bi-chat-dots"></i> Client Testimonials</h3><button class="btn-accent btn-sm" onclick="openTestimonialModal()"><i class="bi bi-plus-lg"></i> Add Review</button></div><div class="testimonial-grid">${adminData.testimonials.map(t => `
+            <div class="testimonial-card">
+                <div class="d-flex gap-3">
+                    <img src="${t.avatar_url}" width="52" height="52" class="rounded-circle" onerror="this.src='https://randomuser.me/api/portraits/men/1.jpg'">
+                    <div>
+                        <strong>${escapeHtml(t.name)}</strong> <span class="text-muted small">📍 ${escapeHtml(t.location)}</span>
+                        <div class="rating-stars mt-1">${'★'.repeat(t.rating)}${'☆'.repeat(5 - t.rating)}</div>
+                        <p class="small mt-2 mb-2">${escapeHtml(t.text)}</p>
+                        <div>
+                            <button class="btn-icon-circle" onclick="editTestimonial(${t.id})"><i class="bi bi-pencil"></i></button>
+                            <button class="btn-icon-circle danger" onclick="deleteTestimonial(${t.id})"><i class="bi bi-trash3"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `).join('')}</div></div>`;
+    }
+    
+    function renderEnquiriesFull() {
+        return `<div class="data-card"><div class="card-header-flex"><h3><i class="bi bi-envelope-paper"></i> Contact Enquiries (${adminData.enquiries.length})</h3><button class="btn-outline-accent btn-sm" onclick="clearAllEnquiries()"><i class="bi bi-trash3"></i> Clear all</button></div>${adminData.enquiries.map(e => `
+            <div class="enquiry-item">
+                <div>
+                    <strong>${escapeHtml(e.name)}</strong><br>
+                    📞 ${escapeHtml(e.phone)}<br>
+                    ✉️ ${escapeHtml(e.email || '-')}
+                    <div class="small text-secondary mt-1">${escapeHtml(e.message || '')}</div>
+                    <div class="badge-date mt-1">${new Date(e.created_at).toLocaleString()}</div>
+                </div>
+                <button class="btn-icon-circle danger" onclick="deleteEnquiry(${e.id})"><i class="bi bi-trash"></i></button>
+            </div>
+        `).join('')}${adminData.enquiries.length === 0 ? '<div class="text-center py-5 text-muted">No inquiries yet</div>' : ''}</div>`;
+    }
+    
+    function renderCurrency() {
+        const rate = adminData.exchangeRate?.ksh_to_aed || 3.5;
+        return `<div class="data-card"><h3><i class="bi bi-currency-exchange"></i> Exchange Rate Settings</h3><div class="row"><div class="col-md-6"><label class="form-label fw-semibold">1 Kenyan Shilling (KSH) = ? AED</label><input type="number" step="0.01" id="rateValue" class="form-control" value="${rate}"></div><div class="col-md-6 mt-3 mt-md-0"><button class="btn-accent w-100" id="saveRateBtn">Update Rate</button><p class="small text-muted mt-2">Current: 1 AED = ${(1/rate).toFixed(2)} KSH<br>Last updated: ${adminData.exchangeRate?.last_updated || 'N/A'}</p><div class="alert alert-light mt-3"><i class="bi bi-info-circle"></i> Live preview: KSH 350 = AED ${Math.round(350/rate)}</div></div></div></div>`;
+    }
+    
+    // Wrapper functions for global access
+    window.editVisa = (id) => {
+        const visa = adminData.visas.find(v => v.id === id);
+        if (visa) openVisaModal(visa);
+    };
+    window.deleteVisa = (id) => deleteItem('visas', id);
+    window.editTour = (id) => {
+        const tour = adminData.tours.find(t => t.id === id);
+        if (tour) openTourModal(tour);
+    };
+    window.deleteTour = (id) => deleteItem('tours', id);
+    window.editTestimonial = (id) => {
+        const testimonial = adminData.testimonials.find(t => t.id === id);
+        if (testimonial) openTestimonialModal(testimonial);
+    };
+    window.deleteTestimonial = (id) => deleteItem('testimonials', id);
+    window.editWhy = (id) => {
+        const why = adminData.whyUs.find(w => w.id === id);
+        if (why) openWhyModal(why);
+    };
+    window.deleteWhy = (id) => deleteItem('whyus', id);
+    window.deleteEnquiry = (id) => deleteItem('enquiries', id);
+    window.clearAllEnquiries = async () => {
+        const confirm = await Swal.fire({
+            title: 'Delete ALL enquiries?',
+            text: "This action cannot be undone!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc2626',
+            confirmButtonText: 'Yes, delete all!'
+        });
+        if (confirm.isConfirmed) {
+            showLoading();
+            try {
+                const response = await fetch(`${API_BASE}enquiries/clear-all/`, {
+                    method: 'DELETE',
+                    headers: { 'X-CSRFToken': getCSRFToken() }
+                });
+                const result = await response.json();
+                if (result.success) {
+                    toast('All enquiries cleared');
+                    await fetchAllData();
+                } else {
+                    toast('Failed to clear', 'error');
+                }
+            } catch (error) {
+                toast('Network error', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+    };
+    
+    window.openVisaModal = openVisaModal;
+    window.openTourModal = openTourModal;
+    window.openTestimonialModal = openTestimonialModal;
+    window.openWhyModal = openWhyModal;
+    
+    function renderCurrentTab() {
+        const container = document.getElementById('dynamicPanel');
+        if (currentTab === 'dashboard') container.innerHTML = renderDashboard();
+        else if (currentTab === 'visas') container.innerHTML = renderGenericList(adminData.visas, 'visas', 'name', 'price', 'description');
+        else if (currentTab === 'tours') container.innerHTML = renderGenericList(adminData.tours, 'tours', 'name', 'price', 'description');
+        else if (currentTab === 'whyus') container.innerHTML = renderGenericList(adminData.whyUs, 'whyus', 'title', null, 'description');
+        else if (currentTab === 'testimonials') container.innerHTML = renderTestimonialsPanel();
+        else if (currentTab === 'enquiries') container.innerHTML = renderEnquiriesFull();
+        else if (currentTab === 'currency') container.innerHTML = renderCurrency();
+        
+        if (currentTab === 'currency') {
+            setTimeout(() => {
+                document.getElementById('saveRateBtn')?.addEventListener('click', () => {
+                    const rate = parseFloat(document.getElementById('rateValue').value);
+                    if (rate > 0 && rate < 100) {
+                        updateExchangeRate(rate);
+                    } else {
+                        toast('Please enter a valid rate (0.01 - 99.99)', 'error');
+                    }
+                });
+            }, 50);
+        }
+        
+        // FAB for mobile
+        const fab = document.getElementById('floatingActionBtn');
+        if (['visas', 'tours', 'testimonials', 'whyus'].includes(currentTab) && window.innerWidth <= 992) {
+            fab.style.display = 'flex';
+            if (currentTab === 'visas') fab.onclick = () => openVisaModal();
+            else if (currentTab === 'tours') fab.onclick = () => openTourModal();
+            else if (currentTab === 'testimonials') fab.onclick = () => openTestimonialModal();
+            else if (currentTab === 'whyus') fab.onclick = () => openWhyModal();
+        } else {
+            fab.style.display = 'none';
+        }
+    }
+    
+    window.setActiveTab = (tab) => {
+        currentTab = tab;
+        document.querySelectorAll('.nav-admin li').forEach(li => li.classList.remove('active'));
+        document.querySelector(`.nav-admin li[data-tab="${tab}"]`)?.classList.add('active');
+        renderCurrentTab();
+        if (window.innerWidth <= 992) {
+            document.getElementById('adminSidebar')?.classList.remove('open');
+        }
+    };
+    
+    // Event Listeners
+    document.querySelectorAll('.nav-admin li').forEach(li => {
+        li.addEventListener('click', (e) => {
+            e.preventDefault();
+            setActiveTab(li.getAttribute('data-tab'));
+        });
+    });
+    
+    document.getElementById('mobileMenuToggle')?.addEventListener('click', () => {
+        document.getElementById('adminSidebar')?.classList.toggle('open');
+    });
+    
+    document.getElementById('refreshBtn')?.addEventListener('click', () => {
+        fetchAllData();
+    });
+    
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 992) {
+            document.getElementById('adminSidebar')?.classList.remove('open');
+        }
+        renderCurrentTab();
+    });
+    
+    // Initial load
+    fetchAllData();
+</script>
+</body>
+</html>

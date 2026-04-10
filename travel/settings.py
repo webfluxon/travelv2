@@ -55,13 +55,15 @@ ROOT_URLCONF = 'travel.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],  # ADD THIS LINE - for global templates
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',  # ADD THIS - for media files in templates
             ],
         },
     },
@@ -116,3 +118,28 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+# ADD THESE STATIC FILES CONFIGURATIONS
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Media files (User uploaded content)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# Default primary key field type
+# https://docs.djangoproject.com/en/6.0/ref/settings/#default-auto-field
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Custom Admin Settings
+ADMIN_SITE_HEADER = "Liviel Tours Administration"
+ADMIN_SITE_TITLE = "Liviel Tours Admin"
+ADMIN_INDEX_TITLE = "Welcome to Liviel Tours Control Panel"
+
+# Login URL for admin panel
+LOGIN_URL = '/admin/login/'
+LOGIN_REDIRECT_URL = '/admin-panel/'
