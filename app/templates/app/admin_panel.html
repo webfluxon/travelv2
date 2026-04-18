@@ -444,6 +444,7 @@
             </div>
             <div>
                 <button class="btn btn-sm btn-outline-secondary me-2" id="refreshBtn"><i class="bi bi-arrow-repeat"></i> Refresh</button>
+                <button class="btn btn-sm btn-outline-danger" onclick="logout()"><i class="bi bi-box-arrow-right"></i> Logout</button>
                 <a href="/admin/" class="badge bg-light text-dark border text-decoration-none"><i class="bi bi-shield-lock"></i> Django Admin</a>
             </div>
         </div>
@@ -1025,6 +1026,36 @@ async function deleteItem(type, id) {
     
     // Initial load
     fetchAllData();
+</script>
+<script>
+    // Add logout function
+function logout() {
+    Swal.fire({
+        title: 'Logout?',
+        text: 'Are you sure you want to sign out?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#c45c26',
+        confirmButtonText: 'Yes, sign out'
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            try {
+                const response = await fetch('/api/auth/logout/', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCSRFToken()
+                    }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    window.location.href = "{% url 'app:index' %}";
+                }
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+        }
+    });
+}
 </script>
 </body>
 </html>

@@ -164,3 +164,67 @@ class SiteSettings(models.Model):
             }
         )
         return settings
+
+# Add to models.py
+from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.utils import timezone
+import random
+import string
+
+class UserManager(BaseUserManager):
+    def create_user(self, email, password=None, **extra_fields):
+        if not email:
+            raise ValueError('Email is required')
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('is_active', True)
+        return self.create_user(email, password, **extra_fields)
+
+
+class User(AbstractUser):
+    """Custom user model with email as username"""
+    username = None
+    email = models.EmailField(unique=True)
+    phone = models.CharField(max_length=20, blank=True)
+    phone_verified = models.BooleanField(default=False)
+    verification_code = models.CharField(max_length=6, blank=True)
+    verification_code_expires = models.DateTimeField(null=True, blank=True)
+    
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+    
+    objects = UserManager()
+    
+    class Meta:
+        verbose_name = 'User'
+        verbose_name_plural = 'Users'
+    
+    def __str__(self):
+        return self.email
+    
+    def generate_verification_code(self):
+        """Generate a 6-digit verification code"""
+        code = ''.join(random.choices(string.digits, k=6))
+        self.verification_code = code
+        self.verification_code_expires = timezone.now() + timezone.timedelta(minutes=10)
+        self.save()
+        return code
+    
+    def verify_code(self, code):
+        """Verify the provided code"""
+        if (self.verification_code == code and 
+            self.verification_code_expires and 
+            timezone.now() < self.verification_code_expires):
+            self.phone_verified = True
+            self.verification_code = ''
+            self.verification_code_expires = None
+            self.save()
+            return True
+        return False

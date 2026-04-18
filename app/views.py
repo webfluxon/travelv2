@@ -4,6 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.paginator import Paginator
+from django.contrib.auth.decorators import login_required
 import json
 from datetime import datetime
 
@@ -25,7 +26,7 @@ def index(request):
     return render(request, 'app/index.html', context)
 
 
-@staff_member_required
+@login_required
 def admin_panel(request):
     """Render the admin panel dashboard (requires login)"""
     return render(request, 'app/admin_panel.html')
