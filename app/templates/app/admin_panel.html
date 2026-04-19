@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Liviel Tours | Admin Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Liviel Tours | Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
@@ -13,401 +13,915 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            font-family: 'DM Sans', system-ui, sans-serif;
-            background: #f4f6fa;
-            color: #0f172a;
+            font-family: 'Poppins', system-ui, sans-serif;
+            background: #f5f7fc;
+            color: #0b1120;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Typography Hierarchy */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        h1 { font-size: 2rem; font-weight: 700; }
+        h2 { font-size: 1.75rem; font-weight: 700; }
+        h3 { font-size: 1rem; font-weight: 600; }
+        h4 { font-size: 0.9375rem; font-weight: 600; }
+        
+        .text-large { font-size: 1rem; }
+        .text-base { font-size: 0.875rem; }
+        .text-small { font-size: 0.75rem; }
+        .text-xs { font-size: 0.6875rem; }
+        
+        .font-light { font-weight: 300; }
+        .font-normal { font-weight: 400; }
+        .font-medium { font-weight: 500; }
+        .font-semibold { font-weight: 600; }
+        .font-bold { font-weight: 700; }
+
+        /* Sidebar Overlay - For click-outside dismiss */
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(2px);
+            z-index: 1035;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.25s ease;
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Modal Form Styles - Only for content inside Swal */
+        .swal-modal-form-group {
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+
+        .swal-modal-label {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+            display: block;
+            letter-spacing: 0.01em;
+            text-transform: uppercase;
+        }
+
+        .swal-modal-input {
+            font-family: 'Poppins', sans-serif !important;
+            font-size: 0.875rem !important;
+            border-radius: 10px !important;
+            border: 1.5px solid #e2e8f0 !important;
+            padding: 0.625rem 0.875rem !important;
+            box-shadow: none !important;
+            transition: all 0.15s !important;
+            margin: 0 !important;
+            width: 100% !important;
+            background: #fafcff !important;
+        }
+
+        .swal-modal-input:focus {
+            border-color: #c45c26 !important;
+            box-shadow: 0 0 0 3px rgba(196, 92, 38, 0.08) !important;
+            outline: none !important;
+            background: white !important;
+        }
+
+        .swal-modal-textarea {
+            font-family: 'Poppins', sans-serif !important;
+            font-size: 0.875rem !important;
+            border-radius: 10px !important;
+            border: 1.5px solid #e2e8f0 !important;
+            padding: 0.625rem 0.875rem !important;
+            box-shadow: none !important;
+            transition: all 0.15s !important;
+            margin: 0 !important;
+            width: 100% !important;
+            min-height: 70px !important;
+            resize: vertical !important;
+            background: #fafcff !important;
+        }
+
+        .swal-modal-textarea:focus {
+            border-color: #c45c26 !important;
+            box-shadow: 0 0 0 3px rgba(196, 92, 38, 0.08) !important;
+            outline: none !important;
+            background: white !important;
         }
 
         /* Loading overlay */
         .loading-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(255,255,255,0.9);
+            inset: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(6px);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 9999;
-            transition: opacity 0.3s;
+            transition: opacity 0.2s;
         }
+
         .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #c45c26;
+            width: 44px;
+            height: 44px;
+            border: 3px solid #e9eef4;
+            border-top-color: #c45c26;
             border-radius: 50%;
-            animation: spin 1s linear infinite;
+            animation: spin 0.7s linear infinite;
         }
+
         @keyframes spin {
-            0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
 
-        /* ========== DESKTOP FIRST LAYOUT ========== */
+        /* ===== MOBILE-FIRST LAYOUT ===== */
         .admin-wrapper {
             display: flex;
             min-height: 100vh;
         }
 
-        /* SIDEBAR - DESKTOP */
+        /* Slim Sidebar */
         .admin-sidebar {
-            width: 280px;
-            background: linear-gradient(180deg, #0f172b 0%, #0a0f1f 100%);
-            color: #e2e8f0;
+            width: 260px;
+            background: linear-gradient(165deg, #0b1322 0%, #0d1a2b 100%);
+            color: #e9edf4;
             position: fixed;
             inset: 0;
             height: 100vh;
             overflow-y: auto;
-            transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            transition: transform 0.25s ease;
             z-index: 1040;
-            box-shadow: 2px 0 20px rgba(0, 0, 0, 0.08);
+            box-shadow: 4px 0 24px rgba(0, 0, 0, 0.04);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .sidebar-brand {
-            padding: 1.75rem 1.5rem;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-            margin-bottom: 1.5rem;
+            padding: 1.25rem 1.25rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
+
         .sidebar-brand h2 {
-            font-family: 'Fraunces', serif;
-            font-size: 1.6rem;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.35rem;
             font-weight: 700;
             margin: 0;
-            background: linear-gradient(135deg, #fff, #e8b86a);
+            background: linear-gradient(135deg, #ffffff, #e8c48a);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            letter-spacing: -0.01em;
         }
+
+        .sidebar-close {
+            display: none;
+            background: rgba(255, 255, 255, 0.08);
+            border: none;
+            color: #94a3b8;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-size: 1.25rem;
+        }
+
+        .sidebar-close:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+        }
+
+        @media (max-width: 992px) {
+            .sidebar-close {
+                display: flex;
+            }
+        }
+
         .sidebar-brand p {
-            font-size: 0.7rem;
-            opacity: 0.65;
+            font-size: 0.625rem;
+            font-weight: 400;
+            opacity: 0.55;
             margin: 0;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
         }
+
         .nav-admin {
             list-style: none;
             padding: 0;
             margin: 0;
         }
+
         .nav-admin li a {
             display: flex;
             align-items: center;
-            gap: 0.9rem;
-            padding: 0.85rem 1.5rem;
-            color: #cbd5e6;
+            gap: 0.75rem;
+            padding: 0.65rem 1.25rem;
+            color: #b9c7de;
             text-decoration: none;
             font-weight: 500;
-            transition: all 0.2s;
+            font-size: 0.8125rem;
+            transition: all 0.15s;
             border-left: 3px solid transparent;
-            margin: 0.2rem 0;
+            margin: 0.1rem 0;
             cursor: pointer;
         }
+
         .nav-admin li a:hover {
-            background: rgba(255,255,255,0.05);
+            background: rgba(255, 255, 255, 0.04);
             color: white;
             border-left-color: #c45c26;
         }
+
         .nav-admin li.active a {
-            background: rgba(196, 92, 38, 0.12);
+            background: rgba(196, 92, 38, 0.08);
             color: white;
             border-left-color: #c45c26;
             font-weight: 600;
         }
 
-        /* MAIN CONTENT */
+        /* Main Content - Mobile First */
         .admin-main {
             flex: 1;
-            margin-left: 280px;
-            padding: 1.5rem 2rem;
-            transition: margin-left 0.3s ease;
+            margin-left: 0;
+            padding: 0.625rem;
+            transition: margin-left 0.25s ease;
         }
 
-        /* Header Card */
+        @media (min-width: 993px) {
+            .admin-main {
+                margin-left: 260px;
+                padding: 1rem 1.25rem;
+            }
+        }
+
+        /* Header - Mobile Optimized */
         .admin-header-card {
             background: white;
-            border-radius: 28px;
-            padding: 1.5rem 1.8rem;
-            margin-bottom: 1.8rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0,0,0,0.03);
-            border: 1px solid rgba(0,0,0,0.05);
+            border-radius: 16px;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.875rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02), 0 0 0 1px rgba(0, 0, 0, 0.02);
             display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .admin-header-card {
+                padding: 0.875rem 1.25rem;
+                border-radius: 18px;
+            }
+        }
+
+        /* Header top row - Welcome left, Menu right */
+        .header-top-row {
+            display: flex;
+            align-items: flex-start;
             justify-content: space-between;
+            width: 100%;
+        }
+
+        .header-left {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-right {
+            display: flex;
             align-items: center;
+        }
+
+        /* Mobile Menu Toggle - Hamburger on the RIGHT */
+        .mobile-menu-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: transparent;
+            border: none;
+            padding: 0.35rem 0.5rem;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            color: #334155;
+            transition: all 0.15s;
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        .mobile-menu-toggle:hover,
+        .mobile-menu-toggle:focus,
+        .mobile-menu-toggle:active,
+        .mobile-menu-toggle:focus-visible {
+            outline: none !important;
+            box-shadow: none !important;
+            background: transparent;
+            color: #c45c26;
+        }
+
+        .mobile-menu-toggle i {
+            font-size: 1.25rem;
+        }
+
+        @media (min-width: 993px) {
+            .mobile-menu-toggle {
+                display: none !important;
+            }
+        }
+
+        /* Welcome text */
+        .welcome-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 0.125rem;
+            letter-spacing: -0.01em;
+            color: #0f172a;
+        }
+
+        @media (min-width: 768px) {
+            .welcome-title {
+                font-size: 1.25rem;
+            }
+        }
+
+        .welcome-subtitle {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.625rem;
+            font-weight: 400;
+            color: #64748b;
+            letter-spacing: 0.01em;
+        }
+
+        /* Action Buttons Row - Mobile Only */
+        .header-actions-row {
+            display: flex;
+            gap: 0.375rem;
+            width: 100%;
+            justify-content: flex-start;
             flex-wrap: wrap;
         }
 
-        /* Stat Cards Grid */
+        @media (min-width: 993px) {
+            .header-actions-row {
+                display: none;
+            }
+        }
+
+        /* Desktop Buttons */
+        .desktop-buttons {
+            display: none;
+        }
+
+        @media (min-width: 993px) {
+            .desktop-buttons {
+                display: flex !important;
+                gap: 0.5rem;
+            }
+            
+            .admin-header-card {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
+            
+            .header-top-row {
+                width: auto;
+                flex: 1;
+            }
+        }
+
+        /* Header Buttons - Slim with 8px border radius */
+        .header-btn {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.6875rem;
+            font-weight: 500;
+            padding: 0.3rem 0.75rem;
+            border-radius: 8px;
+            transition: all 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            line-height: 1.4;
+            letter-spacing: 0.01em;
+            border: 1px solid transparent;
+            white-space: nowrap;
+            text-decoration: none;
+        }
+
+        .header-btn i {
+            font-size: 0.8125rem;
+        }
+
+        .header-btn-outline-secondary {
+            background: transparent;
+            border-color: #cbd5e1;
+            color: #475569;
+        }
+
+        .header-btn-outline-secondary:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+            color: #1e293b;
+        }
+
+        .header-btn-outline-danger {
+            background: transparent;
+            border-color: #fecaca;
+            color: #dc2626;
+        }
+
+        .header-btn-outline-danger:hover {
+            background: #fef2f2;
+            border-color: #fca5a5;
+            color: #b91c1c;
+        }
+
+        .header-btn-light {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+            color: #334155;
+        }
+
+        .header-btn-light:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+            color: #0f172a;
+        }
+
+        /* Compact Stat Cards */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.25rem;
-            margin-bottom: 2rem;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 0.875rem;
         }
+
+        @media (min-width: 640px) {
+            .stats-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
         .stat-card-modern {
             background: white;
-            border-radius: 24px;
-            padding: 1.25rem;
-            border: 1px solid #eef2f8;
-            transition: all 0.25s;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            border-radius: 14px;
+            padding: 0.75rem 0.625rem;
+            border: 1px solid #edf2f9;
+            transition: all 0.2s;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
         }
+
         .stat-card-modern:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 24px -12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px -8px rgba(196, 92, 38, 0.06);
+            border-color: rgba(196, 92, 38, 0.2);
         }
+
         .stat-icon {
-            width: 48px;
-            height: 48px;
-            background: #fef5e8;
-            border-radius: 20px;
+            width: 40px;
+            height: 40px;
+            background: #fdf4ea;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 1rem;
-        }
-        .stat-icon i {
-            font-size: 1.6rem;
-            color: #c45c26;
-        }
-        .stat-number {
-            font-family: 'Fraunces', serif;
-            font-size: 2rem;
-            font-weight: 700;
-            margin: 0;
+            flex-shrink: 0;
         }
 
-        /* Content Cards */
+        .stat-icon i {
+            font-size: 1.25rem;
+            color: #c45c26;
+        }
+
+        .stat-content {
+            flex: 1;
+        }
+
+        .stat-number {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            line-height: 1.2;
+            color: #0f172a;
+            letter-spacing: -0.02em;
+        }
+
+        .stat-label {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.625rem;
+            font-weight: 500;
+            color: #52658c;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+        }
+
+        /* Sleek Data Cards */
         .data-card {
             background: white;
-            border-radius: 28px;
+            border-radius: 16px;
             border: 1px solid #eef2f8;
-            padding: 1.5rem;
-            margin-bottom: 1.8rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            padding: 0.875rem;
+            margin-bottom: 0.875rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
         }
+
+        @media (min-width: 768px) {
+            .data-card {
+                padding: 1rem;
+                border-radius: 18px;
+            }
+        }
+
         .card-header-flex {
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            margin-bottom: 1.25rem;
-            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+            gap: 0.5rem;
         }
+
         .card-header-flex h3 {
-            font-family: 'Fraunces', serif;
-            font-size: 1.35rem;
-            font-weight: 700;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9375rem;
+            font-weight: 600;
             margin: 0;
             display: flex;
             align-items: center;
-            gap: 0.6rem;
+            gap: 0.5rem;
+            color: #1e293b;
+            letter-spacing: -0.01em;
         }
 
-        /* Responsive Item Grid */
+        /* Exchange Rate Card */
+        .exchange-rate-value {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9375rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .exchange-rate-sub {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.6875rem;
+            font-weight: 400;
+            color: #64748b;
+        }
+
+        /* Slim Item Grid */
         .items-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1rem;
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
         }
+
+        @media (min-width: 640px) {
+            .items-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .items-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
         .item-card-horizontal {
-            background: #fefefe;
-            border-radius: 20px;
-            border: 1px solid #edf2f7;
-            padding: 1rem;
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid #eef2f8;
+            padding: 0.625rem;
             display: flex;
-            gap: 1rem;
+            gap: 0.625rem;
             align-items: center;
-            transition: all 0.2s;
+            transition: all 0.15s;
         }
+
         .item-card-horizontal:hover {
-            border-color: #c45c2620;
-            box-shadow: 0 6px 14px rgba(0,0,0,0.03);
+            border-color: rgba(196, 92, 38, 0.25);
+            background: #fefcf9;
         }
+
         .item-img {
-            width: 70px;
-            height: 70px;
-            border-radius: 18px;
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
             object-fit: cover;
             background: #f1f5f9;
             flex-shrink: 0;
         }
+
         .item-info {
             flex: 1;
+            min-width: 0;
         }
+
         .item-info h4 {
-            font-size: 1rem;
-            font-weight: 700;
-            margin-bottom: 0.2rem;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            margin-bottom: 0.1rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            letter-spacing: -0.01em;
         }
+
         .item-price {
+            font-family: 'Poppins', sans-serif;
             color: #c45c26;
-            font-weight: 700;
-            font-size: 0.9rem;
+            font-weight: 600;
+            font-size: 0.6875rem;
         }
+
         .item-desc {
-            font-size: 0.75rem;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.625rem;
+            font-weight: 400;
             color: #5b6e8c;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
+
         .item-actions {
             display: flex;
-            gap: 0.5rem;
+            gap: 0.2rem;
+            flex-shrink: 0;
         }
+
         .btn-icon-circle {
-            width: 34px;
-            height: 34px;
-            border-radius: 40px;
+            width: 26px;
+            height: 26px;
+            border-radius: 8px;
             background: #f1f5f9;
             border: none;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s;
-            color: #334155;
+            color: #3a4c6b;
             cursor: pointer;
+            transition: 0.15s;
+            font-size: 0.8125rem;
         }
+
         .btn-icon-circle:hover {
             background: #e2e8f0;
         }
+
         .btn-icon-circle.danger:hover {
             background: #fee2e2;
             color: #dc2626;
         }
 
-        /* Testimonials Grid */
+        /* Testimonials - Compact */
         .testimonial-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 1.25rem;
+            grid-template-columns: 1fr;
+            gap: 0.625rem;
         }
+
+        @media (min-width: 640px) {
+            .testimonial-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
         .testimonial-card {
             background: #fafcff;
-            border-radius: 24px;
-            padding: 1.2rem;
+            border-radius: 14px;
+            padding: 0.75rem;
             border: 1px solid #eef2f8;
         }
 
-        /* Enquiries List */
+        .testimonial-card .d-flex {
+            gap: 0.625rem !important;
+        }
+
+        .testimonial-card img {
+            width: 36px;
+            height: 36px;
+        }
+
+        .testimonial-card strong {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.8125rem;
+            font-weight: 600;
+        }
+
+        .testimonial-card .text-muted {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.625rem;
+            font-weight: 400;
+        }
+
+        .testimonial-card p {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.6875rem;
+            font-weight: 400;
+        }
+
+        /* Enquiries - Slim */
         .enquiry-item {
             background: #fafcff;
-            border-radius: 20px;
-            padding: 1rem;
-            margin-bottom: 0.75rem;
+            border-radius: 10px;
+            padding: 0.625rem 0.75rem;
+            margin-bottom: 0.375rem;
             border: 1px solid #eef2f8;
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             flex-wrap: wrap;
+            gap: 0.375rem;
         }
 
-        /* FAB (mobile only) */
+        .enquiry-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .enquiry-item strong {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.8125rem;
+            font-weight: 600;
+        }
+
+        .enquiry-item small {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.625rem;
+            font-weight: 400;
+        }
+
+        /* FAB & Mobile */
         .fab-add {
             position: fixed;
-            bottom: 1.5rem;
-            right: 1.5rem;
+            bottom: 1rem;
+            right: 1rem;
             background: #c45c26;
             color: white;
-            width: 56px;
-            height: 56px;
-            border-radius: 28px;
-            display: none;
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 6px 18px rgba(196, 92, 38, 0.4);
+            box-shadow: 0 8px 18px rgba(196, 92, 38, 0.4);
             border: none;
             z-index: 1050;
-            transition: all 0.2s;
-            cursor: pointer;
-        }
-        .mobile-menu-toggle {
-            display: none;
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 40px;
-            padding: 0.5rem 1rem;
+            transition: 0.2s;
             cursor: pointer;
         }
 
-        /* ========== MOBILE RESPONSIVE ========== */
+        .fab-add:hover {
+            transform: scale(0.96);
+            background: #a84a1e;
+        }
+
+        @media (min-width: 993px) {
+            .fab-add {
+                display: none !important;
+            }
+        }
+
+        /* Sidebar Drawer */
         @media (max-width: 992px) {
             .admin-sidebar {
                 transform: translateX(-100%);
-                width: 280px;
+                width: 260px;
             }
             .admin-sidebar.open {
                 transform: translateX(0);
             }
-            .admin-main {
-                margin-left: 0;
-                padding: 1rem;
-            }
-            .mobile-menu-toggle {
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-            }
-            .fab-add {
-                display: flex;
-            }
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 0.75rem;
-            }
-            .items-grid {
-                grid-template-columns: 1fr;
-            }
-            .admin-header-card {
-                padding: 1rem;
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.75rem;
-            }
         }
 
-        @media (min-width: 993px) and (max-width: 1300px) {
-            .items-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        /* utilities */
+        /* Utility Refinements */
         .btn-accent {
+            font-family: 'Poppins', sans-serif;
             background: #c45c26;
             border: none;
             color: white;
-            border-radius: 40px;
-            padding: 0.5rem 1.2rem;
+            border-radius: 8px;
+            padding: 0.35rem 0.875rem;
             font-weight: 500;
+            font-size: 0.6875rem;
             cursor: pointer;
+            transition: 0.15s;
+            box-shadow: 0 2px 6px rgba(196, 92, 38, 0.2);
+            letter-spacing: 0.01em;
         }
+
         .btn-accent:hover {
-            background: #9a451c;
-            color: white;
+            background: #a84a1e;
+            transform: scale(0.98);
         }
+
         .btn-outline-accent {
+            font-family: 'Poppins', sans-serif;
             border: 1px solid #c45c26;
             background: transparent;
             color: #c45c26;
-            border-radius: 40px;
-            padding: 0.4rem 1rem;
-            font-size: 0.85rem;
+            border-radius: 8px;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.625rem;
+            font-weight: 500;
             cursor: pointer;
+            transition: 0.15s;
+            letter-spacing: 0.01em;
         }
+
+        .btn-outline-accent:hover {
+            background: #c45c26;
+            color: white;
+        }
+
+        .badge-date {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.5625rem;
+            font-weight: 400;
+            background: #f1f5f9;
+            padding: 0.125rem 0.4rem;
+            border-radius: 6px;
+            color: #4a6082;
+            display: inline-block;
+        }
+
         .rating-stars {
             color: #f59e0b;
-            font-size: 0.75rem;
+            font-size: 0.625rem;
             letter-spacing: 1px;
         }
-        .badge-date {
-            font-size: 0.7rem;
-            background: #f1f5f9;
-            padding: 0.2rem 0.6rem;
-            border-radius: 40px;
+
+        .text-accent {
+            color: #c45c26 !important;
+        }
+
+        /* Form controls */
+        .form-control-sm {
+            font-family: 'Poppins', sans-serif;
+            border-radius: 8px;
+            border: 1.5px solid #e2e8f0;
+            padding: 0.45rem 0.75rem;
+            font-size: 0.75rem;
+        }
+
+        .form-control-sm:focus {
+            border-color: #c45c26;
+            box-shadow: 0 0 0 3px rgba(196, 92, 38, 0.1);
+        }
+
+        .form-label {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.6875rem;
+            font-weight: 500;
+            color: #334155;
+            margin-bottom: 0.2rem;
+            letter-spacing: 0.01em;
+        }
+
+        /* Alert */
+        .alert-light {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 0.625rem 0.875rem;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.6875rem;
+        }
+
+        .text-muted {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 400;
+        }
+
+        small {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 400;
         }
     </style>
 </head>
@@ -416,19 +930,27 @@
     <div class="loading-spinner"></div>
 </div>
 
+<!-- Sidebar Overlay for click-outside dismiss -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
 <div class="admin-wrapper">
     <!-- Sidebar Desktop / Mobile Drawer -->
     <aside class="admin-sidebar" id="adminSidebar">
         <div class="sidebar-brand">
-            <h2>📋 Liviel</h2>
-            <p>CONTROL PANEL · v2.0</p>
+            <div>
+                <h2>📋 Liviel</h2>
+                <p>CONTROL PANEL · V2</p>
+            </div>
+            <button class="sidebar-close" id="sidebarCloseBtn">
+                <i class="bi bi-x-lg"></i>
+            </button>
         </div>
         <ul class="nav-admin">
             <li data-tab="dashboard" class="active"><a><i class="bi bi-speedometer2"></i> Dashboard</a></li>
             <li data-tab="visas"><a><i class="bi bi-file-text"></i> Visa Packages</a></li>
             <li data-tab="tours"><a><i class="bi bi-compass"></i> Tour Packages</a></li>
             <li data-tab="testimonials"><a><i class="bi bi-chat-dots"></i> Testimonials</a></li>
-            <li data-tab="whyus"><a><i class="bi bi-shield-check"></i> Why Us Section</a></li>
+            <li data-tab="whyus"><a><i class="bi bi-shield-check"></i> Why Us</a></li>
             <li data-tab="enquiries"><a><i class="bi bi-envelope-paper"></i> Enquiries</a></li>
             <li data-tab="currency"><a><i class="bi bi-currency-exchange"></i> Exchange Rates</a></li>
         </ul>
@@ -437,15 +959,52 @@
     <!-- Main Content -->
     <main class="admin-main">
         <div class="admin-header-card">
-            <div>
-                <button class="mobile-menu-toggle" id="mobileMenuToggle"><i class="bi bi-list"></i> Menu</button>
-                <h4 class="mb-0 fw-bold mt-2 mt-md-0">Welcome back, <span class="text-accent" style="color:#c45c26;" id="adminName">Admin</span></h4>
-                <p class="text-muted small mb-0">Manage website content, pricing & customer inquiries</p>
+            <!-- Mobile & Desktop: Welcome left, Menu right -->
+            <div class="header-top-row">
+                <div class="header-left">
+                    <h4 class="welcome-title">Welcome, <span class="text-accent" id="adminName">
+                        {% if user.first_name %}
+                            {{ user.first_name }}
+                        {% elif user.get_full_name %}
+                            {{ user.get_full_name }}
+                        {% else %}
+                            {{ user.email|slice:":10" }}{% if user.email|length > 10 %}...{% endif %}
+                        {% endif %}
+                    </span></h4>
+                    <p class="welcome-subtitle">Manage content & pricing</p>
+                </div>
+                <div class="header-right">
+                    <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                        <i class="bi bi-list"></i>
+                        <span>Menu</span>
+                    </button>
+                </div>
             </div>
-            <div>
-                <button class="btn btn-sm btn-outline-secondary me-2" id="refreshBtn"><i class="bi bi-arrow-repeat"></i> Refresh</button>
-                <button class="btn btn-sm btn-outline-danger" onclick="logout()"><i class="bi bi-box-arrow-right"></i> Logout</button>
-                <a href="/admin/" class="badge bg-light text-dark border text-decoration-none"><i class="bi bi-shield-lock"></i> Django Admin</a>
+            
+            <!-- Action Buttons Row (Mobile Only) -->
+            <div class="header-actions-row">
+                <button class="header-btn header-btn-outline-secondary" id="refreshBtnMobile">
+                    <i class="bi bi-arrow-repeat"></i> Refresh
+                </button>
+                <button class="header-btn header-btn-outline-danger" onclick="logout()">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </button>
+                <a href="/admin/" class="header-btn header-btn-light text-decoration-none">
+                    <i class="bi bi-shield-lock"></i> Django Admin
+                </a>
+            </div>
+            
+            <!-- Desktop Buttons (Hidden on mobile) -->
+            <div class="desktop-buttons">
+                <button class="header-btn header-btn-outline-secondary" id="refreshBtn">
+                    <i class="bi bi-arrow-repeat"></i> Refresh
+                </button>
+                <button class="header-btn header-btn-outline-danger" onclick="logout()">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </button>
+                <a href="/admin/" class="header-btn header-btn-light text-decoration-none">
+                    <i class="bi bi-shield-lock"></i> Django Admin
+                </a>
             </div>
         </div>
 
@@ -506,7 +1065,18 @@
     }
     
     function toast(msg, icon='success') {
-        Swal.fire({ toast: true, position: 'top-end', icon, title: msg, showConfirmButton: false, timer: 2200 });
+        Swal.fire({ toast: true, position: 'top-end', icon, title: msg, showConfirmButton: false, timer: 2000 });
+    }
+    
+    // Sidebar Functions
+    function openSidebar() {
+        document.getElementById('adminSidebar').classList.add('open');
+        document.getElementById('sidebarOverlay').classList.add('active');
+    }
+    
+    function closeSidebar() {
+        document.getElementById('adminSidebar').classList.remove('open');
+        document.getElementById('sidebarOverlay').classList.remove('active');
     }
     
     // API Calls
@@ -532,133 +1102,130 @@
             renderCurrentTab();
         } catch (error) {
             console.error('Error fetching data:', error);
-            toast('Failed to load data. Please refresh.', 'error');
+            toast('Failed to load data', 'error');
         } finally {
             hideLoading();
         }
     }
     
     // CRUD Operations
-
-// CRUD Operations - Updated URLs
-async function createItem(type, data) {
-    showLoading();
-    try {
-        let url;
-        if (type === 'testimonials') {
-            url = '/api/admin/testimonials/create/';
-        } else {
-            url = `${API_BASE}${type}/`;
-        }
-        
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCSRFToken()
-            },
-            body: JSON.stringify(data)
-        });
-        const result = await response.json();
-        if (result.success) {
-            toast(`${type.slice(0,-1)} created successfully`);
-            await fetchAllData();
-            return true;
-        } else {
-            toast(result.error || 'Failed to create', 'error');
-            return false;
-        }
-    } catch (error) {
-        console.error('Create error:', error);
-        toast('Network error: ' + error.message, 'error');
-        return false;
-    } finally {
-        hideLoading();
-    }
-}
-
-async function updateItem(type, id, data) {
-    showLoading();
-    try {
-        const url = `${API_BASE}${type}/${id}/`;
-        const response = await fetch(url, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCSRFToken()
-            },
-            body: JSON.stringify(data)
-        });
-        const result = await response.json();
-        if (result.success) {
-            toast(`${type.slice(0,-1)} updated successfully`);
-            await fetchAllData();
-            return true;
-        } else {
-            toast(result.error || 'Failed to update', 'error');
-            return false;
-        }
-    } catch (error) {
-        console.error('Update error:', error);
-        toast('Network error: ' + error.message, 'error');
-        return false;
-    } finally {
-        hideLoading();
-    }
-}
-
-async function deleteItem(type, id) {
-    const confirm = await Swal.fire({
-        title: 'Are you sure?',
-        text: "This action cannot be undone!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#dc2626',
-        confirmButtonText: 'Yes, delete it!'
-    });
-    
-    if (!confirm.isConfirmed) return false;
-    
-    showLoading();
-    try {
-        const url = `${API_BASE}${type}/${id}/`;
-        const response = await fetch(url, {
-            method: 'DELETE',
-            headers: {
-                'X-CSRFToken': getCSRFToken()
-            }
-        });
-        const result = await response.json();
-        if (result.success) {
-            toast(`${type.slice(0,-1)} deleted successfully`);
-            await fetchAllData();
-            return true;
-        } else {
-            toast(result.error || 'Failed to delete', 'error');
-            return false;
-        }
-    } catch (error) {
-        console.error('Delete error:', error);
-        toast('Network error: ' + error.message, 'error');
-        return false;
-    } finally {
-        hideLoading();
-    }
-}
-    async function updateExchangeRate(rate) {
+    async function createItem(type, data) {
         showLoading();
         try {
+            let url = `${API_BASE}${type}/`;
+            
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCSRFToken()
+                },
+                body: JSON.stringify(data)
+            });
+            const result = await response.json();
+            if (result.success) {
+                toast('Created successfully');
+                await fetchAllData();
+                return true;
+            } else {
+                toast(result.error || 'Failed to create', 'error');
+                return false;
+            }
+        } catch (error) {
+            console.error('Create error:', error);
+            toast('Network error', 'error');
+            return false;
+        } finally {
+            hideLoading();
+        }
+    }
+
+    async function updateItem(type, id, data) {
+        showLoading();
+        try {
+            const url = `${API_BASE}${type}/${id}/`;
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCSRFToken()
+                },
+                body: JSON.stringify(data)
+            });
+            const result = await response.json();
+            if (result.success) {
+                toast('Updated successfully');
+                await fetchAllData();
+                return true;
+            } else {
+                toast(result.error || 'Failed to update', 'error');
+                return false;
+            }
+        } catch (error) {
+            console.error('Update error:', error);
+            toast('Network error', 'error');
+            return false;
+        } finally {
+            hideLoading();
+        }
+    }
+
+    async function deleteItem(type, id) {
+        const confirm = await Swal.fire({
+            title: 'Delete?',
+            text: "This action cannot be undone!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc2626',
+            confirmButtonText: 'Yes, delete'
+        });
+        
+        if (!confirm.isConfirmed) return false;
+        
+        showLoading();
+        try {
+            const url = `${API_BASE}${type}/${id}/`;
+            const response = await fetch(url, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': getCSRFToken()
+                }
+            });
+            const result = await response.json();
+            if (result.success) {
+                toast('Deleted successfully');
+                await fetchAllData();
+                return true;
+            } else {
+                toast(result.error || 'Failed to delete', 'error');
+                return false;
+            }
+        } catch (error) {
+            console.error('Delete error:', error);
+            toast('Network error', 'error');
+            return false;
+        } finally {
+            hideLoading();
+        }
+    }
+    
+    // Update exchange rate
+    async function updateExchangeRate(aedToKsh) {
+        showLoading();
+        try {
+            const kshToAed = 1 / aedToKsh;
+            
             const response = await fetch(`${API_BASE}exchange-rate/`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': getCSRFToken()
                 },
-                body: JSON.stringify({ ksh_to_aed: rate })
+                body: JSON.stringify({ ksh_to_aed: kshToAed })
             });
             const result = await response.json();
             if (result.success) {
-                toast('Exchange rate updated successfully');
+                toast('Exchange rate updated');
                 await fetchAllData();
                 return true;
             } else {
@@ -676,30 +1243,49 @@ async function deleteItem(type, id) {
     // Modal Dialogs
     function openVisaModal(existing = null) {
         Swal.fire({
-            title: existing ? "Edit Visa" : "New Visa",
+            title: existing ? "Edit Visa Package" : "New Visa Package",
             html: `
-                <input id="vName" class="swal2-input" placeholder="Name" value="${existing?.name || ''}">
-                <input id="vPrice" class="swal2-input" placeholder="Price" value="${existing?.price || ''}">
-                <textarea id="vDesc" class="swal2-textarea" placeholder="Description">${existing?.description || ''}</textarea>
-                <input id="vImg" class="swal2-input" placeholder="Image URL" value="${existing?.image_url || ''}">
-                <input id="vOrder" type="number" class="swal2-input" placeholder="Display Order" value="${existing?.order || 0}">
+                <div class="swal-modal-form-group">
+                    <label class="swal-modal-label">Package Name</label>
+                    <input id="vName" class="swal-modal-input" placeholder="e.g., 14 Days Tourist Visa" value="${existing?.name || ''}">
+                </div>
+                <div class="swal-modal-form-group">
+                    <label class="swal-modal-label">Price</label>
+                    <input id="vPrice" class="swal-modal-input" placeholder="e.g., 299 AED" value="${existing?.price || ''}">
+                </div>
+                <div class="swal-modal-form-group">
+                    <label class="swal-modal-label">Description</label>
+                    <textarea id="vDesc" class="swal-modal-textarea" placeholder="Brief description of the visa package">${existing?.description || ''}</textarea>
+                </div>
+                <div class="swal-modal-form-group">
+                    <label class="swal-modal-label">Image URL</label>
+                    <input id="vImg" class="swal-modal-input" placeholder="https://..." value="${existing?.image_url || ''}">
+                </div>
+                <div class="swal-modal-form-group">
+                    <label class="swal-modal-label">Display Order</label>
+                    <input id="vOrder" type="number" class="swal-modal-input" placeholder="0" value="${existing?.order || 0}">
+                </div>
             `,
             preConfirm: () => {
-                const name = document.getElementById('vName').value;
-                const price = document.getElementById('vPrice').value;
+                const name = document.getElementById('vName').value.trim();
+                const price = document.getElementById('vPrice').value.trim();
                 if (!name || !price) {
-                    Swal.showValidationMessage("Name and price are required");
+                    Swal.showValidationMessage("Package name and price are required");
                     return false;
                 }
                 return {
                     name: name,
                     price: price,
-                    description: document.getElementById('vDesc').value,
-                    image_url: document.getElementById('vImg').value || "https://placehold.co/400x300",
+                    description: document.getElementById('vDesc').value.trim(),
+                    image_url: document.getElementById('vImg').value.trim() || "https://placehold.co/400x300",
                     order: parseInt(document.getElementById('vOrder').value) || 0,
                     is_active: true
                 };
-            }
+            },
+            confirmButtonText: existing ? 'Update' : 'Create',
+            showCancelButton: true,
+            cancelButtonText: 'Cancel',
+            confirmButtonColor: '#c45c26'
         }).then(async (res) => {
             if (res.isConfirmed) {
                 if (existing) {
@@ -713,30 +1299,49 @@ async function deleteItem(type, id) {
     
     function openTourModal(existing = null) {
         Swal.fire({
-            title: existing ? "Edit Tour" : "New Tour",
+            title: existing ? "Edit Tour Package" : "New Tour Package",
             html: `
-                <input id="tName" class="swal2-input" placeholder="Name" value="${existing?.name || ''}">
-                <input id="tPrice" class="swal2-input" placeholder="Price" value="${existing?.price || ''}">
-                <textarea id="tDesc" class="swal2-textarea" placeholder="Description">${existing?.description || ''}</textarea>
-                <input id="tImg" class="swal2-input" placeholder="Image URL" value="${existing?.image_url || ''}">
-                <input id="tOrder" type="number" class="swal2-input" placeholder="Display Order" value="${existing?.order || 0}">
+                <div class="swal-modal-form-group">
+                    <label class="swal-modal-label">Tour Name</label>
+                    <input id="tName" class="swal-modal-input" placeholder="e.g., Desert Safari" value="${existing?.name || ''}">
+                </div>
+                <div class="swal-modal-form-group">
+                    <label class="swal-modal-label">Price</label>
+                    <input id="tPrice" class="swal-modal-input" placeholder="e.g., AED 150" value="${existing?.price || ''}">
+                </div>
+                <div class="swal-modal-form-group">
+                    <label class="swal-modal-label">Description</label>
+                    <textarea id="tDesc" class="swal-modal-textarea" placeholder="Brief description of the tour">${existing?.description || ''}</textarea>
+                </div>
+                <div class="swal-modal-form-group">
+                    <label class="swal-modal-label">Image URL</label>
+                    <input id="tImg" class="swal-modal-input" placeholder="https://..." value="${existing?.image_url || ''}">
+                </div>
+                <div class="swal-modal-form-group">
+                    <label class="swal-modal-label">Display Order</label>
+                    <input id="tOrder" type="number" class="swal-modal-input" placeholder="0" value="${existing?.order || 0}">
+                </div>
             `,
             preConfirm: () => {
-                const name = document.getElementById('tName').value;
-                const price = document.getElementById('tPrice').value;
+                const name = document.getElementById('tName').value.trim();
+                const price = document.getElementById('tPrice').value.trim();
                 if (!name || !price) {
-                    Swal.showValidationMessage("Name and price are required");
+                    Swal.showValidationMessage("Tour name and price are required");
                     return false;
                 }
                 return {
                     name: name,
                     price: price,
-                    description: document.getElementById('tDesc').value,
-                    image_url: document.getElementById('tImg').value || "https://placehold.co/400x300",
+                    description: document.getElementById('tDesc').value.trim(),
+                    image_url: document.getElementById('tImg').value.trim() || "https://placehold.co/400x300",
                     order: parseInt(document.getElementById('tOrder').value) || 0,
                     is_active: true
                 };
-            }
+            },
+            confirmButtonText: existing ? 'Update' : 'Create',
+            showCancelButton: true,
+            cancelButtonText: 'Cancel',
+            confirmButtonColor: '#c45c26'
         }).then(async (res) => {
             if (res.isConfirmed) {
                 if (existing) {
@@ -750,26 +1355,53 @@ async function deleteItem(type, id) {
     
     function openTestimonialModal(existing = null) {
         Swal.fire({
-            title: existing ? "Edit Review" : "Add Review",
+            title: existing ? "Edit Testimonial" : "Add Testimonial",
             html: `
-                <input id="tmName" class="swal2-input" placeholder="Name" value="${existing?.name || ''}">
-                <input id="tmLoc" class="swal2-input" placeholder="Location" value="${existing?.location || ''}">
-                <textarea id="tmText" class="swal2-textarea" placeholder="Review text">${existing?.text || ''}</textarea>
-                <input id="tmRating" type="number" min="1" max="5" class="swal2-input" placeholder="Rating 1-5" value="${existing?.rating || 5}">
-                <input id="tmAvatar" class="swal2-input" placeholder="Avatar URL" value="${existing?.avatar_url || ''}">
-                <input id="tmOrder" type="number" class="swal2-input" placeholder="Display Order" value="${existing?.order || 0}">
+                <div class="swal-modal-form-group">
+                    <label class="swal-modal-label">Customer Name</label>
+                    <input id="tmName" class="swal-modal-input" placeholder="e.g., John Doe" value="${existing?.name || ''}">
+                </div>
+                <div class="swal-modal-form-group">
+                    <label class="swal-modal-label">Location</label>
+                    <input id="tmLoc" class="swal-modal-input" placeholder="e.g., Nairobi, Kenya" value="${existing?.location || ''}">
+                </div>
+                <div class="swal-modal-form-group">
+                    <label class="swal-modal-label">Review Text</label>
+                    <textarea id="tmText" class="swal-modal-textarea" placeholder="What did the customer say?">${existing?.text || ''}</textarea>
+                </div>
+                <div class="swal-modal-form-group">
+                    <label class="swal-modal-label">Rating (1-5)</label>
+                    <input id="tmRating" type="number" min="1" max="5" class="swal-modal-input" placeholder="5" value="${existing?.rating || 5}">
+                </div>
+                <div class="swal-modal-form-group">
+                    <label class="swal-modal-label">Avatar URL</label>
+                    <input id="tmAvatar" class="swal-modal-input" placeholder="https://..." value="${existing?.avatar_url || ''}">
+                </div>
+                <div class="swal-modal-form-group">
+                    <label class="swal-modal-label">Display Order</label>
+                    <input id="tmOrder" type="number" class="swal-modal-input" placeholder="0" value="${existing?.order || 0}">
+                </div>
             `,
             preConfirm: () => {
+                const name = document.getElementById('tmName').value.trim();
+                if (!name) {
+                    Swal.showValidationMessage("Customer name is required");
+                    return false;
+                }
                 return {
-                    name: document.getElementById('tmName').value,
-                    location: document.getElementById('tmLoc').value,
-                    text: document.getElementById('tmText').value,
+                    name: name,
+                    location: document.getElementById('tmLoc').value.trim(),
+                    text: document.getElementById('tmText').value.trim(),
                     rating: parseInt(document.getElementById('tmRating').value) || 5,
-                    avatar_url: document.getElementById('tmAvatar').value || "https://randomuser.me/api/portraits/men/1.jpg",
+                    avatar_url: document.getElementById('tmAvatar').value.trim() || "https://randomuser.me/api/portraits/men/1.jpg",
                     order: parseInt(document.getElementById('tmOrder').value) || 0,
                     is_active: true
                 };
-            }
+            },
+            confirmButtonText: existing ? 'Update' : 'Add',
+            showCancelButton: true,
+            cancelButtonText: 'Cancel',
+            confirmButtonColor: '#c45c26'
         }).then(async (res) => {
             if (res.isConfirmed) {
                 if (existing) {
@@ -783,22 +1415,43 @@ async function deleteItem(type, id) {
     
     function openWhyModal(existing = null) {
         Swal.fire({
-            title: existing ? "Edit Why Us" : "Add Why Us",
+            title: existing ? "Edit Why Us Item" : "Add Why Us Item",
             html: `
-                <input id="wTitle" class="swal2-input" placeholder="Title" value="${existing?.title || ''}">
-                <textarea id="wDesc" class="swal2-textarea" placeholder="Description">${existing?.description || ''}</textarea>
-                <input id="wImg" class="swal2-input" placeholder="Image URL" value="${existing?.image_url || ''}">
-                <input id="wOrder" type="number" class="swal2-input" placeholder="Display Order" value="${existing?.order || 0}">
+                <div class="swal-modal-form-group">
+                    <label class="swal-modal-label">Title</label>
+                    <input id="wTitle" class="swal-modal-input" placeholder="e.g., Fast Processing" value="${existing?.title || ''}">
+                </div>
+                <div class="swal-modal-form-group">
+                    <label class="swal-modal-label">Description</label>
+                    <textarea id="wDesc" class="swal-modal-textarea" placeholder="Why choose us?">${existing?.description || ''}</textarea>
+                </div>
+                <div class="swal-modal-form-group">
+                    <label class="swal-modal-label">Image URL</label>
+                    <input id="wImg" class="swal-modal-input" placeholder="https://..." value="${existing?.image_url || ''}">
+                </div>
+                <div class="swal-modal-form-group">
+                    <label class="swal-modal-label">Display Order</label>
+                    <input id="wOrder" type="number" class="swal-modal-input" placeholder="0" value="${existing?.order || 0}">
+                </div>
             `,
             preConfirm: () => {
+                const title = document.getElementById('wTitle').value.trim();
+                if (!title) {
+                    Swal.showValidationMessage("Title is required");
+                    return false;
+                }
                 return {
-                    title: document.getElementById('wTitle').value,
-                    description: document.getElementById('wDesc').value,
-                    image_url: document.getElementById('wImg').value || "https://placehold.co/400x300",
+                    title: title,
+                    description: document.getElementById('wDesc').value.trim(),
+                    image_url: document.getElementById('wImg').value.trim() || "https://placehold.co/400x300",
                     order: parseInt(document.getElementById('wOrder').value) || 0,
                     is_active: true
                 };
-            }
+            },
+            confirmButtonText: existing ? 'Update' : 'Add',
+            showCancelButton: true,
+            cancelButtonText: 'Cancel',
+            confirmButtonColor: '#c45c26'
         }).then(async (res) => {
             if (res.isConfirmed) {
                 if (existing) {
@@ -813,24 +1466,73 @@ async function deleteItem(type, id) {
     // Render Functions
     function renderDashboard() {
         const unreadCount = adminData.enquiries.filter(e => !e.is_read).length;
+        const aedToKsh = adminData.exchangeRate?.aed_to_ksh || 35.0;
+        const kshToAed = adminData.exchangeRate?.ksh_to_aed || (1/35).toFixed(4);
+        const updatedBy = adminData.exchangeRate?.updated_by || 'System';
+        const lastUpdated = adminData.exchangeRate?.last_updated || 'N/A';
+        
         return `
             <div class="stats-grid">
-                <div class="stat-card-modern"><div class="stat-icon"><i class="bi bi-file-text"></i></div><div class="stat-number">${adminData.visas.length}</div><div class="text-muted small">Visa Types</div></div>
-                <div class="stat-card-modern"><div class="stat-icon"><i class="bi bi-compass"></i></div><div class="stat-number">${adminData.tours.length}</div><div class="text-muted small">Tour Packages</div></div>
-                <div class="stat-card-modern"><div class="stat-icon"><i class="bi bi-chat-quote"></i></div><div class="stat-number">${adminData.testimonials.length}</div><div class="text-muted small">Testimonials</div></div>
-                <div class="stat-card-modern"><div class="stat-icon"><i class="bi bi-envelope"></i></div><div class="stat-number">${adminData.enquiries.length}</div><div class="text-muted small">Enquiries ${unreadCount > 0 ? `(${unreadCount} unread)` : ''}</div></div>
+                <div class="stat-card-modern">
+                    <div class="stat-icon"><i class="bi bi-file-text"></i></div>
+                    <div class="stat-content">
+                        <div class="stat-number">${adminData.visas.length}</div>
+                        <div class="stat-label">Visas</div>
+                    </div>
+                </div>
+                <div class="stat-card-modern">
+                    <div class="stat-icon"><i class="bi bi-compass"></i></div>
+                    <div class="stat-content">
+                        <div class="stat-number">${adminData.tours.length}</div>
+                        <div class="stat-label">Tours</div>
+                    </div>
+                </div>
+                <div class="stat-card-modern">
+                    <div class="stat-icon"><i class="bi bi-chat-quote"></i></div>
+                    <div class="stat-content">
+                        <div class="stat-number">${adminData.testimonials.length}</div>
+                        <div class="stat-label">Reviews</div>
+                    </div>
+                </div>
+                <div class="stat-card-modern">
+                    <div class="stat-icon"><i class="bi bi-envelope"></i></div>
+                    <div class="stat-content">
+                        <div class="stat-number">${adminData.enquiries.length}</div>
+                        <div class="stat-label">Enquiries ${unreadCount ? '🔴' : ''}</div>
+                    </div>
+                </div>
             </div>
-            <div class="data-card"><div class="card-header-flex"><h3><i class="bi bi-currency-exchange"></i> Live Exchange Rate</h3></div><div class="d-flex justify-content-between align-items-center flex-wrap"><div><strong>1 KSH = ${adminData.exchangeRate?.ksh_to_aed || 3.5} AED</strong><br><small>1 AED = ${(1/(adminData.exchangeRate?.ksh_to_aed || 3.5)).toFixed(2)} KSH</small></div><div class="badge-date">Updated: ${adminData.exchangeRate?.last_updated || 'N/A'}</div></div></div>
-            <div class="data-card"><div class="card-header-flex"><h3><i class="bi bi-clock-history"></i> Recent Inquiries</h3><button class="btn-outline-accent btn-sm" onclick="setActiveTab('enquiries')">View all</button></div>${adminData.enquiries.length === 0 ? '<div class="text-muted text-center py-4">No enquiries yet</div>' : adminData.enquiries.slice(0, 3).map(e => `
+            <div class="data-card">
+                <div class="card-header-flex">
+                    <h3><i class="bi bi-currency-exchange"></i> Live Exchange Rate</h3>
+                </div>
+                <div class="d-flex justify-content-between align-items-center flex-wrap">
+                    <div>
+                        <span class="exchange-rate-value">1 AED = ${aedToKsh.toFixed(2)} KSH</span><br>
+                        <span class="exchange-rate-sub">1 KSH = ${parseFloat(kshToAed).toFixed(4)} AED</span>
+                    </div>
+                    <div class="text-end">
+                        <div class="badge-date">${lastUpdated}</div>
+                        <div class="badge-date mt-1"><i class="bi bi-person"></i> ${escapeHtml(updatedBy)}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="data-card">
+                <div class="card-header-flex">
+                    <h3><i class="bi bi-clock-history"></i> Recent Inquiries</h3>
+                    <button class="btn-outline-accent btn-sm" onclick="setActiveTab('enquiries')">View all</button>
+                </div>
+                ${adminData.enquiries.length === 0 ? '<div class="text-muted text-center py-3">No enquiries yet</div>' : adminData.enquiries.slice(0, 3).map(e => `
                 <div class="enquiry-item">
                     <div>
                         <strong>${escapeHtml(e.name)}</strong><br>
                         <small>${e.phone} · ${e.email || 'no email'}</small>
-                        <div class="small text-secondary mt-1">${escapeHtml(e.message?.substring(0, 70))}</div>
+                        <div class="small text-secondary mt-1">${escapeHtml(e.message?.substring(0, 60))}${e.message?.length > 60 ? '...' : ''}</div>
                     </div>
                     <button class="btn-icon-circle danger" onclick="deleteEnquiry('${e.id}')"><i class="bi bi-trash"></i></button>
                 </div>
-            `).join('')}</div>
+                `).join('')}
+            </div>
         `;
     }
     
@@ -842,43 +1544,66 @@ async function deleteItem(type, id) {
         };
         const config = titles[type];
         
-        return `<div class="data-card"><div class="card-header-flex"><h3><i class="bi ${config.icon}"></i> ${config.name}</h3><button class="btn-accent btn-sm" onclick="${config.addBtn}"><i class="bi bi-plus-lg"></i> Add</button></div><div class="items-grid">${items.map(item => `
-            <div class="item-card-horizontal">
-                <img class="item-img" src="${item.image_url || 'https://placehold.co/70x70'}" onerror="this.src='https://placehold.co/70x70'">
-                <div class="item-info">
-                    <h4>${escapeHtml(item[nameKey])}</h4>
-                    ${item[priceKey] ? `<div class="item-price">${escapeHtml(item[priceKey])}</div>` : ''}
-                    <div class="item-desc">${escapeHtml(item[descKey]?.substring(0, 70))}</div>
-                </div>
-                <div class="item-actions">
-                    <button class="btn-icon-circle" onclick="${config.editFn}(${item.id})"><i class="bi bi-pencil"></i></button>
-                    <button class="btn-icon-circle danger" onclick="${config.deleteFn}(${item.id})"><i class="bi bi-trash3"></i></button>
-                </div>
+        return `<div class="data-card">
+            <div class="card-header-flex">
+                <h3><i class="bi ${config.icon}"></i> ${config.name}</h3>
+                <button class="btn-accent btn-sm" onclick="${config.addBtn}"><i class="bi bi-plus-lg"></i> Add</button>
             </div>
-        `).join('')}</div>${items.length === 0 ? '<div class="text-center py-4 text-muted">No items. Click Add to create.</div>' : ''}</div>`;
+            <div class="items-grid">
+                ${items.map(item => `
+                <div class="item-card-horizontal">
+                    <img class="item-img" src="${item.image_url || 'https://placehold.co/100x100'}" onerror="this.src='https://placehold.co/100x100'">
+                    <div class="item-info">
+                        <h4>${escapeHtml(item[nameKey])}</h4>
+                        ${item[priceKey] ? `<div class="item-price">${escapeHtml(item[priceKey])}</div>` : ''}
+                        <div class="item-desc">${escapeHtml(item[descKey]?.substring(0, 50))}${item[descKey]?.length > 50 ? '...' : ''}</div>
+                    </div>
+                    <div class="item-actions">
+                        <button class="btn-icon-circle" onclick="${config.editFn}(${item.id})"><i class="bi bi-pencil"></i></button>
+                        <button class="btn-icon-circle danger" onclick="${config.deleteFn}(${item.id})"><i class="bi bi-trash3"></i></button>
+                    </div>
+                </div>
+                `).join('')}
+            </div>
+            ${items.length === 0 ? '<div class="text-center py-4 text-muted">No items. Click Add to create.</div>' : ''}
+        </div>`;
     }
     
     function renderTestimonialsPanel() {
-        return `<div class="data-card"><div class="card-header-flex"><h3><i class="bi bi-chat-dots"></i> Client Testimonials</h3><button class="btn-accent btn-sm" onclick="openTestimonialModal()"><i class="bi bi-plus-lg"></i> Add Review</button></div><div class="testimonial-grid">${adminData.testimonials.map(t => `
-            <div class="testimonial-card">
-                <div class="d-flex gap-3">
-                    <img src="${t.avatar_url}" width="52" height="52" class="rounded-circle" onerror="this.src='https://randomuser.me/api/portraits/men/1.jpg'">
-                    <div>
-                        <strong>${escapeHtml(t.name)}</strong> <span class="text-muted small">📍 ${escapeHtml(t.location)}</span>
-                        <div class="rating-stars mt-1">${'★'.repeat(t.rating)}${'☆'.repeat(5 - t.rating)}</div>
-                        <p class="small mt-2 mb-2">${escapeHtml(t.text)}</p>
-                        <div>
-                            <button class="btn-icon-circle" onclick="editTestimonial(${t.id})"><i class="bi bi-pencil"></i></button>
-                            <button class="btn-icon-circle danger" onclick="deleteTestimonial(${t.id})"><i class="bi bi-trash3"></i></button>
+        return `<div class="data-card">
+            <div class="card-header-flex">
+                <h3><i class="bi bi-chat-dots"></i> Client Testimonials</h3>
+                <button class="btn-accent btn-sm" onclick="openTestimonialModal()"><i class="bi bi-plus-lg"></i> Add Review</button>
+            </div>
+            <div class="testimonial-grid">
+                ${adminData.testimonials.map(t => `
+                <div class="testimonial-card">
+                    <div class="d-flex">
+                        <img src="${t.avatar_url}" class="rounded-circle" onerror="this.src='https://randomuser.me/api/portraits/men/1.jpg'" style="width:36px;height:36px;object-fit:cover;">
+                        <div class="flex-grow-1">
+                            <strong>${escapeHtml(t.name)}</strong> <span class="text-muted small">📍 ${escapeHtml(t.location)}</span>
+                            <div class="rating-stars mt-1">${'★'.repeat(t.rating)}${'☆'.repeat(5 - t.rating)}</div>
+                            <p class="small mt-2 mb-2">${escapeHtml(t.text)}</p>
+                            <div>
+                                <button class="btn-icon-circle" onclick="editTestimonial(${t.id})"><i class="bi bi-pencil"></i></button>
+                                <button class="btn-icon-circle danger" onclick="deleteTestimonial(${t.id})"><i class="bi bi-trash3"></i></button>
+                            </div>
                         </div>
                     </div>
                 </div>
+                `).join('')}
             </div>
-        `).join('')}</div></div>`;
+            ${adminData.testimonials.length === 0 ? '<div class="text-center py-4 text-muted">No testimonials yet</div>' : ''}
+        </div>`;
     }
     
     function renderEnquiriesFull() {
-        return `<div class="data-card"><div class="card-header-flex"><h3><i class="bi bi-envelope-paper"></i> Contact Enquiries (${adminData.enquiries.length})</h3><button class="btn-outline-accent btn-sm" onclick="clearAllEnquiries()"><i class="bi bi-trash3"></i> Clear all</button></div>${adminData.enquiries.map(e => `
+        return `<div class="data-card">
+            <div class="card-header-flex">
+                <h3><i class="bi bi-envelope-paper"></i> Contact Enquiries (${adminData.enquiries.length})</h3>
+                <button class="btn-outline-accent btn-sm" onclick="clearAllEnquiries()"><i class="bi bi-trash3"></i> Clear all</button>
+            </div>
+            ${adminData.enquiries.map(e => `
             <div class="enquiry-item">
                 <div>
                     <strong>${escapeHtml(e.name)}</strong><br>
@@ -889,12 +1614,41 @@ async function deleteItem(type, id) {
                 </div>
                 <button class="btn-icon-circle danger" onclick="deleteEnquiry(${e.id})"><i class="bi bi-trash"></i></button>
             </div>
-        `).join('')}${adminData.enquiries.length === 0 ? '<div class="text-center py-5 text-muted">No inquiries yet</div>' : ''}</div>`;
+            `).join('')}
+            ${adminData.enquiries.length === 0 ? '<div class="text-center py-5 text-muted">No inquiries yet</div>' : ''}
+        </div>`;
     }
     
     function renderCurrency() {
-        const rate = adminData.exchangeRate?.ksh_to_aed || 3.5;
-        return `<div class="data-card"><h3><i class="bi bi-currency-exchange"></i> Exchange Rate Settings</h3><div class="row"><div class="col-md-6"><label class="form-label fw-semibold">1 Kenyan Shilling (KSH) = ? AED</label><input type="number" step="0.01" id="rateValue" class="form-control" value="${rate}"></div><div class="col-md-6 mt-3 mt-md-0"><button class="btn-accent w-100" id="saveRateBtn">Update Rate</button><p class="small text-muted mt-2">Current: 1 AED = ${(1/rate).toFixed(2)} KSH<br>Last updated: ${adminData.exchangeRate?.last_updated || 'N/A'}</p><div class="alert alert-light mt-3"><i class="bi bi-info-circle"></i> Live preview: KSH 350 = AED ${Math.round(350/rate)}</div></div></div></div>`;
+        const aedToKsh = adminData.exchangeRate?.aed_to_ksh || 35.0;
+        const kshToAed = adminData.exchangeRate?.ksh_to_aed || (1/35).toFixed(4);
+        const updatedBy = adminData.exchangeRate?.updated_by || 'System';
+        
+        return `<div class="data-card">
+            <h3><i class="bi bi-currency-exchange"></i> Exchange Rate Settings</h3>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">1 AED = ? Kenyan Shillings (KSH)</label>
+                    <input type="number" step="0.01" id="rateValue" class="form-control form-control-sm" value="${aedToKsh.toFixed(2)}">
+                    <small class="text-muted">Current market: 1 AED ≈ 35 KSH</small>
+                </div>
+                <div class="col-md-6">
+                    <button class="btn-accent w-100" id="saveRateBtn">Update Rate</button>
+                    <p class="small text-muted mt-2">
+                        Current: 1 KSH = ${parseFloat(kshToAed).toFixed(4)} AED<br>
+                        Last updated: ${adminData.exchangeRate?.last_updated || 'N/A'}<br>
+                        <i class="bi bi-person-check"></i> Updated by: <strong>${escapeHtml(updatedBy)}</strong>
+                    </p>
+                </div>
+            </div>
+            <div class="alert alert-light mt-3">
+                <i class="bi bi-info-circle"></i> 
+                Live preview:<br>
+                • AED 100 = KSH ${(100 * aedToKsh).toFixed(0)}<br>
+                • AED 350 = KSH ${(350 * aedToKsh).toFixed(0)}<br>
+                • KSH 3,500 = AED ${(3500 / aedToKsh).toFixed(0)}
+            </div>
+        </div>`;
     }
     
     // Wrapper functions for global access
@@ -968,11 +1722,11 @@ async function deleteItem(type, id) {
         if (currentTab === 'currency') {
             setTimeout(() => {
                 document.getElementById('saveRateBtn')?.addEventListener('click', () => {
-                    const rate = parseFloat(document.getElementById('rateValue').value);
-                    if (rate > 0 && rate < 100) {
-                        updateExchangeRate(rate);
+                    const aedToKsh = parseFloat(document.getElementById('rateValue').value);
+                    if (aedToKsh > 0 && aedToKsh < 1000) {
+                        updateExchangeRate(aedToKsh);
                     } else {
-                        toast('Please enter a valid rate (0.01 - 99.99)', 'error');
+                        toast('Please enter a valid rate (0.01 - 999.99)', 'error');
                     }
                 });
             }, 50);
@@ -996,9 +1750,7 @@ async function deleteItem(type, id) {
         document.querySelectorAll('.nav-admin li').forEach(li => li.classList.remove('active'));
         document.querySelector(`.nav-admin li[data-tab="${tab}"]`)?.classList.add('active');
         renderCurrentTab();
-        if (window.innerWidth <= 992) {
-            document.getElementById('adminSidebar')?.classList.remove('open');
-        }
+        closeSidebar();
     };
     
     // Event Listeners
@@ -1010,52 +1762,65 @@ async function deleteItem(type, id) {
     });
     
     document.getElementById('mobileMenuToggle')?.addEventListener('click', () => {
-        document.getElementById('adminSidebar')?.classList.toggle('open');
+        openSidebar();
+    });
+    
+    document.getElementById('sidebarCloseBtn')?.addEventListener('click', () => {
+        closeSidebar();
+    });
+    
+    document.getElementById('sidebarOverlay')?.addEventListener('click', () => {
+        closeSidebar();
     });
     
     document.getElementById('refreshBtn')?.addEventListener('click', () => {
         fetchAllData();
     });
     
+    document.getElementById('refreshBtnMobile')?.addEventListener('click', () => {
+        fetchAllData();
+    });
+    
     window.addEventListener('resize', () => {
         if (window.innerWidth > 992) {
-            document.getElementById('adminSidebar')?.classList.remove('open');
+            closeSidebar();
         }
         renderCurrentTab();
     });
     
+    // Logout function
+    function logout() {
+        Swal.fire({
+            title: 'Logout?',
+            text: 'Are you sure you want to sign out?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#c45c26',
+            confirmButtonText: 'Yes, sign out'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    const response = await fetch('/api/auth/logout/', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': getCSRFToken()
+                        }
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        window.location.href = '/';
+                    }
+                } catch (error) {
+                    console.error('Logout error:', error);
+                }
+            }
+        });
+    }
+    
+    window.logout = logout;
+    
     // Initial load
     fetchAllData();
-</script>
-<script>
-    // Add logout function
-function logout() {
-    Swal.fire({
-        title: 'Logout?',
-        text: 'Are you sure you want to sign out?',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#c45c26',
-        confirmButtonText: 'Yes, sign out'
-    }).then(async (result) => {
-        if (result.isConfirmed) {
-            try {
-                const response = await fetch('/api/auth/logout/', {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': getCSRFToken()
-                    }
-                });
-                const data = await response.json();
-                if (data.success) {
-                    window.location.href = "{% url 'app:index' %}";
-                }
-            } catch (error) {
-                console.error('Logout error:', error);
-            }
-        }
-    });
-}
 </script>
 </body>
 </html>

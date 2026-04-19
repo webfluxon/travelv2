@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>My Portal | Liviel Tours</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f5f7fc;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ===== DESKTOP LAYOUT WITH SIDEBAR ===== */
+        .app-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar - Desktop */
+        .app-sidebar {
+            width: 260px;
+            background: linear-gradient(165deg, #0b1322 0%, #0d1a2b 100%);
+            color: #e9edf4;
+            position: fixed;
+            inset: 0;
+            height: 100vh;
+            overflow-y: auto;
+            transition: transform 0.25s ease;
+            z-index: 1040;
+            box-shadow: 4px 0 24px rgba(0, 0, 0, 0.04);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            display: block;
+        }
+
+        @media (max-width: 992px) {
+            .app-sidebar {
+                transform: translateX(-100%);
+                width: 260px;
+            }
+            .app-sidebar.open {
+                transform: translateX(0);
+            }
+        }
+
+        .sidebar-brand {
+            padding: 1.5rem 1.25rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sidebar-brand h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin: 0;
+            background: linear-gradient(135deg, #ffffff, #e8c48a);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.01em;
+        }
+
+        .sidebar-brand p {
+            font-size: 0.625rem;
+            font-weight: 400;
+            opacity: 0.55;
+            margin: 0;
+            letter-spacing: 0.3px;
+        }
+
+        .sidebar-close {
+            display: none;
+            background: rgba(255, 255, 255, 0.08);
+            border: none;
+            color: #94a3b8;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-size: 1.25rem;
+        }
+
+        .sidebar-close:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+        }
+
+        @media (max-width: 992px) {
+            .sidebar-close {
+                display: flex;
+            }
+        }
+
+        /* User Profile in Sidebar */
+        .sidebar-user {
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 1rem;
+        }
+
+        .sidebar-avatar {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #c45c26, #e8b86a);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.125rem;
+            flex-shrink: 0;
+        }
+
+        .sidebar-user-info h4 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.125rem;
+        }
+
+        .sidebar-user-info p {
+            font-size: 0.625rem;
+            color: #94a3b8;
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-item {
+            margin: 0.1rem 0;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.65rem 1.25rem;
+            color: #b9c7de;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.8125rem;
+            transition: all 0.15s;
+            border-left: 3px solid transparent;
+            cursor: pointer;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.04);
+            color: white;
+            border-left-color: #c45c26;
+        }
+
+        .nav-link.active {
+            background: rgba(196, 92, 38, 0.08);
+            color: white;
+            border-left-color: #c45c26;
+            font-weight: 600;
+        }
+
+        .nav-link i {
+            font-size: 1.125rem;
+            width: 20px;
+        }
+
+        .nav-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.05);
+            margin: 1rem 1.25rem;
+        }
+
+        .nav-footer {
+            padding: 1rem 1.25rem;
+            margin-top: auto;
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.65rem 1.25rem;
+            color: #ef4444;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.8125rem;
+            transition: all 0.15s;
+            border-radius: 8px;
+            background: rgba(239, 68, 68, 0.08);
+        }
+
+        .logout-btn:hover {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+        }
+
+        /* Sidebar Overlay */
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(2px);
+            z-index: 1035;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.25s ease;
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Main Content Area */
+        .app-main {
+            flex: 1;
+            padding: 0.75rem;
+            transition: margin-left 0.25s ease;
+        }
+
+        @media (min-width: 993px) {
+            .app-main {
+                margin-left: 260px;
+                padding: 1.25rem 1.5rem;
+            }
+        }
+
+        .dashboard-container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 993px) {
+            .dashboard-container {
+                max-width: 1200px;
+            }
+        }
+
+        /* Header - Mobile Only */
+        .mobile-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        @media (min-width: 993px) {
+            .mobile-header {
+                display: none;
+            }
+        }
+
+        .mobile-menu-btn {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            border: 1px solid #eef2f8;
+            cursor: pointer;
+        }
+
+        .mobile-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #c45c26, #e8b86a);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        /* Desktop Header */
+        .desktop-header {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (min-width: 993px) {
+            .desktop-header {
+                display: flex;
+            }
+        }
+
+        .page-title h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 0.25rem;
+        }
+
+        .page-title p {
+            font-size: 0.8125rem;
+            color: #64748b;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .notification-btn {
+            width: 44px;
+            height: 44px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            border: 1px solid #eef2f8;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: #ef4444;
+            color: white;
+            font-size: 0.625rem;
+            font-weight: 600;
+            padding: 0.125rem 0.375rem;
+            border-radius: 40px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+        }
+
+        @media (min-width: 768px) {
+            .stats-grid {
+                gap: 1rem;
+                margin-bottom: 1.5rem;
+            }
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1rem 0.75rem;
+            border: 1px solid #eef2f8;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        }
+
+        .stat-icon {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 0.125rem;
+        }
+
+        .stat-label {
+            font-size: 0.625rem;
+            color: #64748b;
+            text-transform: uppercase;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.25rem;
+        }
+
+        @media (min-width: 768px) {
+            .quick-actions {
+                gap: 0.75rem;
+                margin-bottom: 1.5rem;
+            }
+        }
+
+        .quick-action-btn {
+            flex: 1;
+            background: white;
+            border-radius: 14px;
+            padding: 0.875rem;
+            text-align: center;
+            text-decoration: none;
+            border: 1px solid #eef2f8;
+            transition: all 0.15s;
+        }
+
+        .quick-action-btn:hover {
+            border-color: #c45c26;
+            background: #fefcf9;
+        }
+
+        .quick-action-btn i {
+            font-size: 1.25rem;
+            color: #c45c26;
+            margin-bottom: 0.375rem;
+            display: block;
+        }
+
+        .quick-action-btn span {
+            font-size: 0.6875rem;
+            font-weight: 500;
+            color: #1e293b;
+        }
+
+        /* Dashboard Grid - Two Column */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        @media (min-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
+                margin-bottom: 1rem;
+            }
+        }
+
+        /* Cards */
+        .dashboard-card {
+            background: white;
+            border-radius: 18px;
+            padding: 1.25rem;
+            margin-bottom: 0.75rem;
+            border: 1px solid #eef2f8;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        }
+
+        @media (min-width: 768px) {
+            .dashboard-card {
+                border-radius: 20px;
+                padding: 1.5rem;
+                margin-bottom: 1rem;
+            }
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-link {
+            font-size: 0.6875rem;
+            color: #c45c26;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* Status Card */
+        .visa-status-item {
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .visa-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .visa-type {
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: #0f172a;
+        }
+
+        .visa-number {
+            font-size: 0.6875rem;
+            color: #c45c26;
+            font-weight: 500;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.2rem 0.625rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.625rem;
+            background: #e0e7ff;
+            color: #3730a3;
+            margin-bottom: 0.75rem;
+        }
+
+        .progress-bar-bg {
+            background: #e2e8f0;
+            height: 5px;
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 0.75rem 0 0.5rem;
+        }
+
+        .progress-bar-fill {
+            background: linear-gradient(90deg, #c45c26, #e8b86a);
+            height: 100%;
+            border-radius: 3px;
+            width: 50%;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.625rem;
+            color: #64748b;
+        }
+
+        /* Document List */
+        .document-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.625rem 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .document-item:last-child {
+            border-bottom: none;
+        }
+
+        .document-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .document-icon {
+            width: 36px;
+            height: 36px;
+            background: #f1f5f9;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+        }
+
+        .document-name {
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: #1e293b;
+        }
+
+        .document-status {
+            font-size: 0.625rem;
+        }
+
+        .status-success {
+            color: #22c55e;
+            background: #dcfce7;
+            padding: 0.2rem 0.5rem;
+            border-radius: 40px;
+        }
+
+        .status-pending {
+            color: #f59e0b;
+            background: #fef3c7;
+            padding: 0.2rem 0.5rem;
+            border-radius: 40px;
+        }
+
+        .upload-btn {
+            background: #fdf4ea;
+            border: 1px dashed #c45c26;
+            border-radius: 12px;
+            padding: 0.75rem;
+            text-align: center;
+            color: #c45c26;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-top: 0.75rem;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .upload-btn:hover {
+            background: #fef5e8;
+        }
+
+        /* Payment Row */
+        .payment-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.625rem 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .payment-item:last-child {
+            border-bottom: none;
+        }
+
+        .payment-date {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        .payment-desc {
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: #1e293b;
+        }
+
+        .payment-amount {
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .payment-status {
+            font-size: 0.625rem;
+            background: #dcfce7;
+            color: #22c55e;
+            padding: 0.2rem 0.5rem;
+            border-radius: 40px;
+        }
+
+        .total-paid {
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        /* Updates Timeline */
+        .update-item {
+            display: flex;
+            gap: 0.75rem;
+            padding: 0.625rem 0;
+        }
+
+        .update-icon {
+            width: 28px;
+            height: 28px;
+            background: #fdf4ea;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #c45c26;
+            font-size: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        .update-content p {
+            font-size: 0.75rem;
+            color: #1e293b;
+            margin-bottom: 0.125rem;
+        }
+
+        .update-time {
+            font-size: 0.625rem;
+            color: #94a3b8;
+        }
+
+        /* Tour Recommendations */
+        .tours-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+        }
+
+        .tour-card {
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 1rem 0.5rem;
+            text-align: center;
+            border: 1px solid #eef2f8;
+        }
+
+        .tour-icon {
+            font-size: 1.75rem;
+            margin-bottom: 0.375rem;
+        }
+
+        .tour-name {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.125rem;
+        }
+
+        .tour-price {
+            font-size: 0.8125rem;
+            font-weight: 700;
+            color: #c45c26;
+            margin-bottom: 0.625rem;
+        }
+
+        .tour-btn {
+            background: white;
+            border: 1px solid #c45c26;
+            color: #c45c26;
+            border-radius: 8px;
+            padding: 0.3rem 0.75rem;
+            font-size: 0.625rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .tour-btn:hover {
+            background: #c45c26;
+            color: white;
+        }
+
+        /* Bottom Navigation - Mobile Only */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #eef2f8;
+            padding: 0.625rem 1rem;
+            display: flex;
+            justify-content: space-around;
+            z-index: 100;
+        }
+
+        @media (min-width: 993px) {
+            .bottom-nav {
+                display: none;
+            }
+        }
+
+        .nav-item-bottom {
+            text-align: center;
+            text-decoration: none;
+            color: #94a3b8;
+            transition: all 0.15s;
+        }
+
+        .nav-item-bottom.active {
+            color: #c45c26;
+        }
+
+        .nav-item-bottom i {
+            font-size: 1.25rem;
+            display: block;
+            margin-bottom: 0.125rem;
+        }
+
+        .nav-item-bottom span {
+            font-size: 0.5625rem;
+            font-weight: 500;
+        }
+
+        /* Padding for bottom nav on mobile */
+        @media (max-width: 992px) {
+            .dashboard-container {
+                padding-bottom: 70px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="app-wrapper">
+        <!-- Sidebar Navigation -->
+        <aside class="app-sidebar" id="appSidebar">
+            <div class="sidebar-brand">
+                <div>
+                    <h2>📋 Liviel</h2>
+                    <p>CLIENT PORTAL</p>
+                </div>
+                <button class="sidebar-close" id="sidebarCloseBtn">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            
+            <div class="sidebar-user">
+                <div class="sidebar-avatar">JM</div>
+                <div class="sidebar-user-info">
+                    <h4>John Mwangi</h4>
+                    <p>LIV-2026-001</p>
+                </div>
+            </div>
+            
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#" class="nav-link active">
+                        <i class="bi bi-house"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="bi bi-clock-history"></i>
+                        <span>Application Status</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="bi bi-folder"></i>
+                        <span>Documents</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="bi bi-credit-card"></i>
+                        <span>Payments</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="bi bi-chat-dots"></i>
+                        <span>Messages</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="bi bi-compass"></i>
+                        <span>Book Tour</span>
+                    </a>
+                </li>
+            </ul>
+            
+            <div class="nav-divider"></div>
+            
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="bi bi-gear"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="bi bi-question-circle"></i>
+                        <span>Help Center</span>
+                    </a>
+                </li>
+            </ul>
+            
+            <div class="nav-footer">
+                <a href="#" class="logout-btn">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Sign Out</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <!-- Mobile Header -->
+            <div class="mobile-header">
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="bi bi-list"></i>
+                </button>
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div class="notification-btn" style="background: transparent; border: none; width: auto; height: auto;">
+                        <i class="bi bi-bell"></i>
+                    </div>
+                    <div class="mobile-avatar">JM</div>
+                </div>
+            </div>
+
+            <!-- Desktop Header -->
+            <div class="desktop-header">
+                <div class="page-title">
+                    <h1>Dashboard</h1>
+                    <p>Welcome back, John! Here's your visa application overview.</p>
+                </div>
+                <div class="header-actions">
+                    <div class="notification-btn">
+                        <i class="bi bi-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </div>
+                    <div class="notification-btn">
+                        <i class="bi bi-whatsapp"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-container">
+                <!-- Stats Overview -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📋</div>
+                        <div class="stat-value">1</div>
+                        <div class="stat-label">Active Visa</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📄</div>
+                        <div class="stat-value">2/3</div>
+                        <div class="stat-label">Documents</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💬</div>
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">Messages</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-value">400</div>
+                        <div class="stat-label">AED Paid</div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <a href="#" class="quick-action-btn">
+                        <i class="bi bi-cloud-upload"></i>
+                        <span>Upload</span>
+                    </a>
+                    <a href="#" class="quick-action-btn">
+                        <i class="bi bi-whatsapp"></i>
+                        <span>Chat</span>
+                    </a>
+                    <a href="#" class="quick-action-btn">
+                        <i class="bi bi-credit-card"></i>
+                        <span>Pay</span>
+                    </a>
+                    <a href="#" class="quick-action-btn">
+                        <i class="bi bi-download"></i>
+                        <span>Visa</span>
+                    </a>
+                </div>
+
+                <!-- Current Application Status -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="bi bi-clock-history" style="color: #c45c26;"></i>
+                            Current Application
+                        </h3>
+                        <a href="#" class="card-link">View Details →</a>
+                    </div>
+                    
+                    <div class="visa-status-item">
+                        <div class="visa-header">
+                            <span class="visa-type">30 Days Tourist Visa</span>
+                            <span class="visa-number">LIV-2026-001</span>
+                        </div>
+                        <span class="status-badge">📤 Submitted to Immigration</span>
+                        
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" style="width: 50%;"></div>
+                        </div>
+                        <div class="progress-info">
+                            <span>📅 Submitted: Mar 15</span>
+                            <span>🎯 Expected: Mar 22</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Two Column Layout -->
+                <div class="dashboard-grid">
+                    <!-- Document Center -->
+                    <div class="dashboard-card" style="margin-bottom: 0;">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="bi bi-folder" style="color: #c45c26;"></i>
+                                Documents
+                            </h3>
+                            <a href="#" class="card-link">All →</a>
+                        </div>
+                        
+                        <div class="document-item">
+                            <div class="document-info">
+                                <div class="document-icon">🛂</div>
+                                <span class="document-name">Passport</span>
+                            </div>
+                            <span class="document-status status-success">✓ Verified</span>
+                        </div>
+                        <div class="document-item">
+                            <div class="document-info">
+                                <div class="document-icon">📸</div>
+                                <span class="document-name">Photo</span>
+                            </div>
+                            <span class="document-status status-success">✓ Verified</span>
+                        </div>
+                        <div class="document-item">
+                            <div class="document-info">
+                                <div class="document-icon">🆔</div>
+                                <span class="document-name">Emirates ID</span>
+                            </div>
+                            <span class="document-status status-pending">⏳ Pending</span>
+                        </div>
+                        
+                        <div class="upload-btn">
+                            <i class="bi bi-plus-circle"></i> Upload Document
+                        </div>
+                    </div>
+
+                    <!-- Payment Summary -->
+                    <div class="dashboard-card" style="margin-bottom: 0;">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="bi bi-wallet" style="color: #c45c26;"></i>
+                                Payments
+                            </h3>
+                            <a href="#" class="card-link">History →</a>
+                        </div>
+                        
+                        <div class="payment-item">
+                            <div>
+                                <div class="payment-desc">Visa Fee</div>
+                                <div class="payment-date">Mar 15, 2026</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="payment-amount">AED 350</div>
+                                <span class="payment-status">PAID</span>
+                            </div>
+                        </div>
+                        <div class="payment-item">
+                            <div>
+                                <div class="payment-desc">Service Fee</div>
+                                <div class="payment-date">Mar 15, 2026</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="payment-amount">AED 50</div>
+                                <span class="payment-status">PAID</span>
+                            </div>
+                        </div>
+                        
+                        <div class="total-paid">
+                            <span>Total Paid</span>
+                            <span style="color: #c45c26;">AED 400</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Updates -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="bi bi-bell" style="color: #c45c26;"></i>
+                            Recent Updates
+                        </h3>
+                    </div>
+                    
+                    <div class="update-item">
+                        <div class="update-icon">📤</div>
+                        <div class="update-content">
+                            <p>Your application was submitted to immigration</p>
+                            <span class="update-time">Mar 18, 2026 · 10:30 AM</span>
+                        </div>
+                    </div>
+                    <div class="update-item">
+                        <div class="update-icon">✅</div>
+                        <div class="update-content">
+                            <p>Documents verified successfully</p>
+                            <span class="update-time">Mar 16, 2026 · 2:15 PM</span>
+                        </div>
+                    </div>
+                    <div class="update-item">
+                        <div class="update-icon">📋</div>
+                        <div class="update-content">
+                            <p>Application received - Awaiting documents</p>
+                            <span class="update-time">Mar 15, 2026 · 9:00 AM</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recommended Tours -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="bi bi-gift" style="color: #c45c26;"></i>
+                            Recommended for You
+                        </h3>
+                    </div>
+                    
+                    <div class="tours-grid">
+                        <div class="tour-card">
+                            <div class="tour-icon">🏜️</div>
+                            <div class="tour-name">Desert Safari</div>
+                            <div class="tour-price">AED 150</div>
+                            <button class="tour-btn">Book</button>
+                        </div>
+                        <div class="tour-card">
+                            <div class="tour-icon">🏙️</div>
+                            <div class="tour-name">City Tour</div>
+                            <div class="tour-price">AED 200</div>
+                            <button class="tour-btn">Book</button>
+                        </div>
+                        <div class="tour-card">
+                            <div class="tour-icon">🕌</div>
+                            <div class="tour-name">Abu Dhabi</div>
+                            <div class="tour-price">AED 250</div>
+                            <button class="tour-btn">Book</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Bottom Navigation - Mobile Only -->
+    <div class="bottom-nav">
+        <a href="#" class="nav-item-bottom active">
+            <i class="bi bi-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="#" class="nav-item-bottom">
+            <i class="bi bi-clock"></i>
+            <span>Status</span>
+        </a>
+        <a href="#" class="nav-item-bottom">
+            <i class="bi bi-folder"></i>
+            <span>Docs</span>
+        </a>
+        <a href="#" class="nav-item-bottom">
+            <i class="bi bi-chat"></i>
+            <span>Chat</span>
+        </a>
+        <a href="#" class="nav-item-bottom">
+            <i class="bi bi-person"></i>
+            <span>Profile</span>
+        </a>
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+            
+            // Get DOM elements
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const sidebar = document.getElementById('appSidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const closeBtn = document.getElementById('sidebarCloseBtn');
+            
+            // Debug - check if elements exist
+            console.log('mobileMenuBtn:', mobileMenuBtn);
+            console.log('sidebar:', sidebar);
+            console.log('overlay:', overlay);
+            console.log('closeBtn:', closeBtn);
+            
+            // Open sidebar function
+            function openSidebar() {
+                console.log('Opening sidebar');
+                if (sidebar) {
+                    sidebar.classList.add('open');
+                }
+                if (overlay) {
+                    overlay.classList.add('active');
+                }
+            }
+            
+            // Close sidebar function
+            function closeSidebar() {
+                console.log('Closing sidebar');
+                if (sidebar) {
+                    sidebar.classList.remove('open');
+                }
+                if (overlay) {
+                    overlay.classList.remove('active');
+                }
+            }
+            
+            // Add event listeners
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    openSidebar();
+                });
+            }
+            
+            if (closeBtn) {
+                closeBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    closeSidebar();
+                });
+            }
+            
+            if (overlay) {
+                overlay.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    closeSidebar();
+                });
+            }
+            
+            // Close sidebar when a nav link is clicked (mobile)
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth <= 992) {
+                        closeSidebar();
+                    }
+                });
+            });
+            
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 992) {
+                    closeSidebar();
+                }
+            });
+            
+            // Escape key to close
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && sidebar && sidebar.classList.contains('open')) {
+                    closeSidebar();
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

@@ -343,20 +343,29 @@ def get_exchange_rate_api(request):
                 return api_response(success=False, error='Invalid exchange rate', status=400)
             
             rate.ksh_to_aed = new_rate
-            rate.updated_by = request.user.username if request.user.is_authenticated else 'Admin'
+            
+            # ✅ CLEVER FIX: Use str(request.user) which calls User.__str__()
+            if request.user.is_authenticated:
+                rate.updated_by = str(request.user)
+            else:
+                rate.updated_by = 'System'
+            
             rate.save()
             
             return api_response(data={
                 'ksh_to_aed': float(rate.ksh_to_aed),
-                'aed_to_ksh': round(1 / float(rate.ksh_to_aed), 4),
-                'last_updated': rate.last_updated.strftime('%Y-%m-%d %H:%M:%S')
+                'aed_to_ksh': round(1 / float(rate.ksh_to_aed), 2),
+                'last_updated': rate.last_updated.strftime('%Y-%m-%d %H:%M:%S'),
+                'updated_by': rate.updated_by
             })
+        except ValueError:
+            return api_response(success=False, error='Invalid rate value', status=400)
         except Exception as e:
             return api_response(success=False, error=str(e), status=400)
     else:  # GET
         return api_response(data={
             'ksh_to_aed': float(rate.ksh_to_aed),
-            'aed_to_ksh': round(1 / float(rate.ksh_to_aed), 4),
+            'aed_to_ksh': round(1 / float(rate.ksh_to_aed), 2),
             'last_updated': rate.last_updated.strftime('%Y-%m-%d %H:%M:%S'),
             'updated_by': rate.updated_by
         })

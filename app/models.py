@@ -1,3 +1,7 @@
+from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.utils import timezone
+import random
+import string
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from datetime import datetime
@@ -101,7 +105,7 @@ class Enquiry(models.Model):
 
 class ExchangeRate(models.Model):
     """Exchange rate model (KSH to AED)"""
-    ksh_to_aed = models.DecimalField(max_digits=10, decimal_places=4, default=3.5, help_text="1 KSH = ? AED")
+    ksh_to_aed = models.DecimalField(max_digits=10, decimal_places=4, default=0.0286, help_text="1 KSH = ? AED")
     last_updated = models.DateTimeField(auto_now=True)
     updated_by = models.CharField(max_length=100, blank=True, default="System")
     
@@ -120,9 +124,9 @@ class ExchangeRate(models.Model):
     
     @classmethod
     def get_current(cls):
-        """Get the current exchange rate or create default"""
+        """Get the current exchange rate or create default (1 AED = 35 KSH)"""
         rate, created = cls.objects.get_or_create(
-            defaults={'ksh_to_aed': 3.5, 'updated_by': 'System'}
+            defaults={'ksh_to_aed': 0.0286, 'updated_by': 'System'}  # 1/35 = 0.0286
         )
         return rate
 
@@ -165,11 +169,6 @@ class SiteSettings(models.Model):
         )
         return settings
 
-# Add to models.py
-from django.contrib.auth.models import AbstractUser, BaseUserManager
-from django.utils import timezone
-import random
-import string
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -207,7 +206,13 @@ class User(AbstractUser):
         verbose_name_plural = 'Users'
     
     def __str__(self):
-        return self.email
+        """Return first name if available, otherwise email prefix"""
+        if self.first_name:
+            return self.first_name
+        elif self.get_full_name():
+            return self.get_full_name()
+        else:
+            return self.email.split('@')[0].capitalize()
     
     def generate_verification_code(self):
         """Generate a 6-digit verification code"""
